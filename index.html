@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mosaic Colour Test</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <main class="app">
+      <h1>Mosaic Colour Test</h1>
+      <p class="scores">
+        <span data-score="0">Red-green: <b>0%</b></span>
+        <span data-score="1">Purple-blue: <b>0%</b></span>
+        <span data-score="2">Purple-green: <b>0%</b></span>
+      </p>
+      <p id="stage" class="stage"></p>
+      <p id="message" class="message" aria-live="polite"></p>
+      <div class="board">
+        <canvas id="mosaic" aria-label="Mosaic of coloured squares"></canvas>
+      </div>
+      <div class="buttons">
+        <button id="idontsee" type="button">I don't see</button>
+        <button id="restart" type="button">Restart</button>
+      </div>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,32 @@
+import { describe, expect, it } from 'vitest';
+import { describeDiagnosis, diagnose } from '../src/diagnosis';
+
+describe('diagnose', () => {
+  it.each([
+    // [R, P, D], type, severity
+    [[85, 0, 0], 'normal', null],
+    [[100, 0, 0], 'normal', null],
+    [[80, 80, 85], 'normal', null],
+    [[80, 75, 85], 'protan', 'mild'],
+    [[80, 80, 80], 'protan', 'mild'],
+    [[65, 50, 30], 'deutan', 'mild'],
+    [[60, 50, 50], 'protan', 'mild'],
+    [[55, 50, 30], 'deutan', 'moderate'],
+    [[25, 30, 30], 'protan', 'moderate'],
+    [[20, 30, 50], 'protan', 'severe'],
+    [[20, 50, 30], 'deutan', 'severe'],
+    [[20, 50, 50], 'protan', 'moderate'],
+    [[0, 0, 0], 'protan', 'severe'],
+  ] as const)('%j → %s %s', (scores, type, severity) => {
+    expect(diagnose(scores)).toEqual({ type, severity });
+  });
+});
+
+describe('describeDiagnosis', () => {
+  it('formats results', () => {
+    expect(describeDiagnosis({ type: 'normal', severity: null })).toBe('Normal colour vision');
+    expect(describeDiagnosis({ type: 'deutan', severity: 'mild' })).toBe(
+      'Mild deutan-type colour vision deficiency',
+    );
+  });
+});
