@@ -9,7 +9,7 @@
   <body>
     <main class="app">
       <h1>Mosaic Colour Test</h1>
-      <p class="scores">
+      <p id="scores" class="scores">
         <span data-score="0">Red-green: <b>0%</b></span>
         <span data-score="1">Purple-blue: <b>0%</b></span>
         <span data-score="2">Purple-green: <b>0%</b></span>
@@ -23,10 +23,24 @@
           <button id="next" type="button" class="primary">Next test</button>
         </div>
       </div>
-      <div class="buttons">
+      <div id="controls" class="buttons">
         <button id="idontsee" type="button">I don't see</button>
         <button id="restart" type="button">Restart</button>
       </div>
+      <section id="results" class="results" aria-labelledby="results-title" hidden>
+        <h2 id="results-title">Your results</h2>
+        <p id="diagnosis" class="diagnosis"></p>
+        <ul id="result-scores" class="result-scores"></ul>
+        <p id="skipped-note" class="note" hidden>
+          Your red-green score was above 80%, so the other tests weren't needed.
+        </p>
+        <p class="note">
+          This is a screening tool, not a medical diagnosis. Results depend on your
+          screen's colour calibration and brightness. If you have concerns about your
+          colour vision, see an optometrist.
+        </p>
+        <button id="again" type="button" class="primary">Take the test again</button>
+      </section>
     </main>
     <script type="module" src="/src/main.ts"></script>
   </body>

@@ -28,7 +28,3 @@ export const SUBTESTS: readonly Subtest[] = [
   { name: 'Purple-blue', background: [0, 0, 30], steps: placeholderSteps() },
   { name: 'Purple-green', background: [0, 0, 30], steps: placeholderSteps() },
 ];
-
-/** Tile indices (row * GRID + col) lit up on the final board. */
-export const END_PATTERN: readonly number[] = [];
-export const END_COLOUR: Hsl = [0, 0, 95];

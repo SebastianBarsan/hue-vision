@@ -24,13 +24,24 @@ const pause = document.querySelector<HTMLElement>('#pause')!;
 const pauseText = document.querySelector<HTMLElement>('#pause-text')!;
 const nextButton = document.querySelector<HTMLButtonElement>('#next')!;
 const scoreEls = [...document.querySelectorAll<HTMLElement>('[data-score]')];
+const testView = [
+  document.querySelector<HTMLElement>('#scores')!,
+  stage,
+  message,
+  document.querySelector<HTMLElement>('.board')!,
+  document.querySelector<HTMLElement>('#controls')!,
+];
+const results = document.querySelector<HTMLElement>('#results')!;
+const diagnosisEl = document.querySelector<HTMLElement>('#diagnosis')!;
+const resultScores = document.querySelector<HTMLElement>('#result-scores')!;
+const skippedNote = document.querySelector<HTMLElement>('#skipped-note')!;
+const againButton = document.querySelector<HTMLButtonElement>('#again')!;
 
 const renderer = new MosaicRenderer(canvas);
 let state: State = createInitialState(rng);
 
-function setMessage(text: string, isResult = false): void {
+function setMessage(text: string): void {
   message.textContent = text;
-  message.classList.toggle('result', isResult);
 }
 
 function updateText(): void {
@@ -68,11 +79,40 @@ function updatePause(): void {
 }
 
 function showBoard(): void {
-  if (state.phase === 'done') {
-    renderer.showEnd(currentSubtest(state).background);
-  } else {
+  if (state.phase !== 'done') {
     renderer.showBoard(currentSubtest(state).background, currentTarget(state));
   }
+}
+
+/** Swap the board for the final results screen once the whole test is done. */
+function updateResults(): void {
+  const done = state.phase === 'done';
+  testView.forEach((el) => (el.hidden = done));
+  results.hidden = !done;
+  if (!done) return;
+
+  diagnosisEl.textContent = describeDiagnosis(diagnose(state.scores));
+  // Subtests after the last one taken were skipped because red-green was normal.
+  resultScores.replaceChildren(
+    ...SUBTESTS.map((subtest, i) => {
+      const taken = i <= state.subtest;
+      const li = document.createElement('li');
+      li.classList.toggle('skipped', !taken);
+      const name = document.createElement('span');
+      name.textContent = subtest.name;
+      const bar = document.createElement('span');
+      bar.className = 'bar';
+      const fill = document.createElement('span');
+      fill.style.width = `${taken ? state.scores[i] : 0}%`;
+      bar.append(fill);
+      const value = document.createElement('b');
+      value.textContent = taken ? `${state.scores[i]}%` : 'Not needed';
+      li.append(name, bar, value);
+      return li;
+    }),
+  );
+  skippedNote.hidden = state.subtest === SUBTESTS.length - 1;
+  againButton.focus();
 }
 
 function apply({ state: next, event }: Result): void {
@@ -93,12 +133,13 @@ function apply({ state: next, event }: Result): void {
       setMessage('Click on the small square!');
       break;
     case 'done':
-      setMessage(`Result: ${describeDiagnosis(diagnose(state.scores))}`, true);
+      setMessage('');
       break;
   }
   if (event !== 'miss') showBoard();
   updateText();
   updatePause();
+  updateResults();
 }
 
 canvas.addEventListener('pointerdown', (e) => {
@@ -110,13 +151,17 @@ idontSeeButton.addEventListener('click', () => apply(idontSee(state)));
 
 nextButton.addEventListener('click', () => apply(nextTest(state, rng)));
 
-restartButton.addEventListener('click', () => {
+function startOver(): void {
   state = restart(rng);
+  updateResults();
   setMessage('Click on the small square!');
   showBoard();
   updateText();
   updatePause();
-});
+}
+
+restartButton.addEventListener('click', startOver);
+againButton.addEventListener('click', startOver);
 
 window.addEventListener('resize', () => renderer.resize());
 

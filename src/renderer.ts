@@ -1,5 +1,5 @@
 import type { Position } from './engine';
-import { END_COLOUR, END_PATTERN, GRID, type Hsl } from './levels';
+import { GRID, type Hsl } from './levels';
 
 /** One flicker step every ~57ms matches the original (9 steps per 510ms). */
 const STEP_MS = 510 / 9;
@@ -73,12 +73,6 @@ export class MosaicRenderer {
       }
     }
     for (let i = 0; i < PRESHIFT_STEPS; i++) this.step();
-    this.draw();
-  }
-
-  showEnd(background: Hsl): void {
-    this.fill(background);
-    for (const i of END_PATTERN) this.tiles[i].set(END_COLOUR);
     this.draw();
   }
 
