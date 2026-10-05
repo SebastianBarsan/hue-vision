@@ -66,9 +66,32 @@ h1 {
 }
 
 .board {
+  position: relative;
   display: flex;
   justify-content: center;
   width: 100%;
+}
+
+.pause {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px;
+  background: rgb(17 18 20 / 0.82);
+}
+
+.pause[hidden] {
+  display: none;
+}
+
+.pause p {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
 }
 
 canvas {
@@ -96,6 +119,16 @@ button {
 
 button:hover:not(:disabled) {
   background: var(--button-hover);
+}
+
+button.primary {
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 600;
+}
+
+button.primary:hover:not(:disabled) {
+  background: #fff3a0;
 }
 
 button:disabled {

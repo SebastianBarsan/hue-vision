@@ -7,11 +7,15 @@ export interface Position {
   col: number;
 }
 
-export type Phase = 'demo' | 'testing' | 'done';
+/** 'between' waits for the user to start the next subtest after one ends. */
+export type Phase = 'demo' | 'testing' | 'between' | 'done';
 
 export interface State {
   phase: Phase;
-  /** Index into SUBTESTS; meaningless during the demo. */
+  /**
+   * Index into SUBTESTS: the subtest being taken, or the one about to start
+   * when between subtests. Meaningless during the demo.
+   */
   subtest: number;
   /** Number of correct clicks in the current subtest. */
   level: number;
@@ -23,7 +27,7 @@ export interface State {
   positions: readonly Position[];
 }
 
-export type Event = 'hit' | 'miss' | 'advance' | 'done' | 'ignored';
+export type Event = 'hit' | 'miss' | 'between' | 'start' | 'done' | 'ignored';
 
 export interface Result {
   state: State;
@@ -69,50 +73,64 @@ export function restart(rng: Rng): State {
   return startSubtest([0, 0, 0], 0, rng);
 }
 
-/** Leave the current subtest (or demo) and move on, or finish the whole test. */
-function advance(state: State, rng: Rng): Result {
-  if (state.phase === 'demo') {
-    return { state: startSubtest(state.scores, 0, rng), event: 'advance' };
-  }
+function between(scores: State['scores'], subtest: number): State {
+  return { phase: 'between', subtest, level: 0, strike: false, scores, positions: [] };
+}
+
+/**
+ * Leave the current subtest (or demo) and wait for the user to start the next
+ * one, or finish the whole test.
+ */
+function advance(state: State): Result {
+  if (state.phase === 'demo') return { state: between(state.scores, 0), event: 'between' };
   const last = state.subtest === SUBTESTS.length - 1;
   if (last || state.scores[0] > NORMAL_RED_GREEN) {
     return { state: { ...state, phase: 'done', strike: false }, event: 'done' };
   }
-  return { state: startSubtest(state.scores, state.subtest + 1, rng), event: 'advance' };
+  return { state: between(state.scores, state.subtest + 1), event: 'between' };
 }
 
-export function click(state: State, row: number, col: number, rng: Rng): Result {
-  if (state.phase === 'done') return { state, event: 'ignored' };
+/** Start the subtest the user is waiting on. */
+export function nextTest(state: State, rng: Rng): Result {
+  if (state.phase !== 'between') return { state, event: 'ignored' };
+  return { state: startSubtest(state.scores, state.subtest, rng), event: 'start' };
+}
+
+export function click(state: State, row: number, col: number): Result {
+  if (state.phase === 'between' || state.phase === 'done') return { state, event: 'ignored' };
 
   const target = state.positions[state.level];
   const hit = Math.abs(row - target.row) <= 1 && Math.abs(col - target.col) <= 1;
 
   if (hit) {
-    if (state.phase === 'demo') return advance(state, rng);
+    if (state.phase === 'demo') return advance(state);
     const level = state.level + 1;
     const scores = [...state.scores] as [number, number, number];
     scores[state.subtest] = Math.floor((100 * level) / STEPS);
     const next: State = { ...state, level, strike: false, scores };
-    if (level >= state.positions.length) return advance(next, rng);
+    if (level >= state.positions.length) return advance(next);
     return { state: next, event: 'hit' };
   }
 
   if (!state.strike) return { state: { ...state, strike: true }, event: 'miss' };
-  return advance(state, rng);
+  return advance(state);
 }
 
-export function idontSee(state: State, rng: Rng): Result {
-  if (state.phase === 'done') return { state, event: 'ignored' };
-  return advance(state, rng);
+export function idontSee(state: State): Result {
+  if (state.phase === 'between' || state.phase === 'done') return { state, event: 'ignored' };
+  return advance(state);
 }
 
-/** The subtest being shown: the demo, a colour subtest, or the last one when done. */
+/**
+ * The subtest being shown: the demo, a colour subtest, the next one when
+ * between subtests, or the last one when done.
+ */
 export function currentSubtest(state: State): Subtest {
   return state.phase === 'demo' ? DEMO : SUBTESTS[state.subtest];
 }
 
 export function currentTarget(state: State): { position: Position; colour: Hsl } | null {
-  if (state.phase === 'done') return null;
+  if (state.phase === 'between' || state.phase === 'done') return null;
   return {
     position: state.positions[state.level],
     colour: currentSubtest(state).steps[state.level],
