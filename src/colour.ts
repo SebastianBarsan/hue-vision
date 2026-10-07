@@ -42,7 +42,7 @@ export function lmsToSrgb(lms: Vec3): Vec3 {
   return multiply(LMS_TO_RGB, lms).map(toGamma) as unknown as Vec3;
 }
 
-/** sRGB (0–1 per channel) to HSL in CSS units, rounded to one decimal place. */
+/** sRGB (0–1 per channel) to HSL in CSS units, rounded to two decimal places. */
 export function srgbToHsl([r, g, b]: Vec3): Hsl {
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
@@ -57,26 +57,45 @@ export function srgbToHsl([r, g, b]: Vec3): Hsl {
     else h = (r - g) / d + 4;
     h = (h * 60 + 360) % 360;
   }
-  const round = (x: number) => Math.round(x * 10) / 10;
+  const round = (x: number) => Math.round(x * 100) / 100;
   return [round(h), round(s * 100), round(l * 100)];
 }
 
 /**
- * Colours on the tritan confusion line through `background`, from easiest to
- * hardest. Each one only raises the S-cone (blue) excitation, by a contrast
- * falling geometrically from `maxContrast` to `minContrast`, while L and M stay
- * the same. People with normal colour vision see a violet-blue to mauve block;
- * for a tritan the block matches the background.
+ * Cone-contrast directions. A step in one of these directions moves a colour
+ * along a confusion line: the colours differ only in the signal of a cone type
+ * the matching dichromat lacks, so for them the target matches the background.
  */
-export function tritanSteps(
+export const CONFUSION = {
+  /** Lowers the L-cone (red) signal only: invisible without L cones. */
+  protan: [-1, 0, 0],
+  /** Raises the M-cone (green) signal only: invisible without M cones. */
+  deutan: [0, 1, 0],
+  /** Raises the S-cone (blue) signal only: invisible without S cones. */
+  tritan: [0, 0, 1],
+  /**
+   * Raises L and lowers M by the same contrast, the red-green opponent
+   * direction. Protans and deutans each see only one of the two changes, as a
+   * brightness change, which the flicker hides.
+   */
+  redGreen: [1, -1, 0],
+} as const satisfies Record<string, Vec3>;
+
+/**
+ * Target colours for a background, from easiest to hardest. Each cone's
+ * excitation is scaled by `1 + contrast * direction`, with the contrast
+ * falling geometrically from `maxContrast` to `minContrast`.
+ */
+export function confusionSteps(
   background: Vec3,
+  direction: Vec3,
   count: number,
   maxContrast: number,
   minContrast: number,
 ): Vec3[] {
-  const [l, m, s] = srgbToLms(background);
+  const lms = srgbToLms(background);
   return Array.from({ length: count }, (_, i) => {
     const contrast = maxContrast * (minContrast / maxContrast) ** (i / (count - 1));
-    return lmsToSrgb([l, m, s * (1 + contrast)]);
+    return lmsToSrgb(lms.map((c, j) => c * (1 + contrast * direction[j])) as unknown as Vec3);
   });
 }

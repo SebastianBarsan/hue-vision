@@ -1,7 +1,7 @@
 import type { Position } from './engine';
 import { GRID, type Hsl } from './levels';
 
-/** One flicker step every ~57ms matches the original (9 steps per 510ms). */
+/** One flicker step every ~57ms (9 steps per 510ms). */
 const STEP_MS = 510 / 9;
 /** Steps applied before the first frame so tiles start out of sync. */
 const PRESHIFT_STEPS = 6;

@@ -1,6 +1,5 @@
-import { srgbToHsl, tritanSteps, type Vec3 } from './colour';
 import { describeDiagnosis, diagnose, diagnoseTritan } from './diagnosis';
-import { STEPS, SUBTESTS, type Subtest } from './levels';
+import { BLUE_YELLOW_SUBTEST, SUBTESTS, type Subtest } from './levels';
 
 /** One tab: a practice round, then its subtests in order. */
 export interface Suite {
@@ -27,23 +26,10 @@ export const RED_GREEN: Suite = {
   skippedNote: "Your red-green score was above 80%, so the other tests weren't needed.",
 };
 
-/**
- * Dark yellow. Only the S-cone signal may change, so the easiest target on a
- * yellow background is violet-blue rather than pure blue (that would need a
- * yellow-green background).
- */
-const TRITAN_BACKGROUND: Vec3 = [0.6, 0.62, 0.03];
-
 export const BLUE_YELLOW: Suite = {
   id: 'blue-yellow',
   name: 'Blue-yellow',
-  subtests: [
-    {
-      name: 'Blue-yellow',
-      background: srgbToHsl(TRITAN_BACKGROUND),
-      steps: tritanSteps(TRITAN_BACKGROUND, STEPS, 18, 0.06).map(srgbToHsl),
-    },
-  ],
+  subtests: [BLUE_YELLOW_SUBTEST],
   stopsEarly: () => false,
   describe: ([score]) => {
     const diagnosis = diagnoseTritan(score);

@@ -7,8 +7,9 @@ export interface Diagnosis {
 }
 
 /**
- * Same rules as the original test, with its gaps closed so every abnormal
- * result gets a severity (the original left R = 25, 60 and 80 unlabelled).
+ * Scores are R = red-green, P = purple-blue (protan line) and D = purple-green
+ * (deutan line). Every abnormal result gets a severity. The cut-offs have not
+ * been calibrated against real protan and deutan observers.
  */
 export function diagnose([redGreen, purpleBlue, purpleGreen]: readonly number[]): Diagnosis {
   const normal =
