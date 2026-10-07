@@ -32,6 +32,27 @@ h1 {
   letter-spacing: 0.04em;
 }
 
+.tabs {
+  display: inline-flex;
+  gap: 4px;
+  margin: 0 0 16px;
+  padding: 4px;
+  border-radius: 8px;
+  background: var(--button);
+}
+
+.tabs button {
+  padding: 6px 16px;
+  background: transparent;
+  color: var(--muted);
+}
+
+.tabs button.active {
+  background: var(--button-hover);
+  color: var(--fg);
+  font-weight: 600;
+}
+
 .scores {
   display: flex;
   flex-wrap: wrap;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { describeDiagnosis, diagnose } from '../src/diagnosis';
+import { describeDiagnosis, diagnose, diagnoseTritan } from '../src/diagnosis';
 
 describe('diagnose', () => {
   it.each([
@@ -19,6 +19,21 @@ describe('diagnose', () => {
     [[0, 0, 0], 'protan', 'severe'],
   ] as const)('%j → %s %s', (scores, type, severity) => {
     expect(diagnose(scores)).toEqual({ type, severity });
+  });
+});
+
+describe('diagnoseTritan', () => {
+  it.each([
+    [100, 'normal', null],
+    [80, 'normal', null],
+    [75, 'tritan', 'mild'],
+    [60, 'tritan', 'mild'],
+    [55, 'tritan', 'moderate'],
+    [25, 'tritan', 'moderate'],
+    [20, 'tritan', 'severe'],
+    [0, 'tritan', 'severe'],
+  ] as const)('%i → %s %s', (score, type, severity) => {
+    expect(diagnoseTritan(score)).toEqual({ type, severity });
   });
 });
 

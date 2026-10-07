@@ -10,10 +10,12 @@ import {
   type State,
 } from './engine';
 import { MosaicRenderer } from './renderer';
+import { SUITES, type Suite } from './suites';
 
 const rng = Math.random;
 
 const canvas = document.querySelector<HTMLCanvasElement>('#mosaic')!;
+const tabs = document.querySelector<HTMLElement>('#tabs')!;
 const scoresEl = document.querySelector<HTMLElement>('#scores')!;
 const stage = document.querySelector<HTMLElement>('#stage')!;
 const message = document.querySelector<HTMLElement>('#message')!;
@@ -37,14 +39,26 @@ const againButton = document.querySelector<HTMLButtonElement>('#again')!;
 
 const renderer = new MosaicRenderer(canvas);
 
-let state: State = createInitialState(rng);
+/** Each tab keeps its own progress, so switching tabs doesn't lose it. */
+const states = new Map<Suite, State>(SUITES.map((suite) => [suite, createInitialState(rng, suite)]));
+let state: State = states.get(SUITES[0])!;
 let scoreEls: HTMLElement[] = [];
+
+const tabButtons = SUITES.map((suite) => {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.setAttribute('role', 'tab');
+  button.textContent = suite.name;
+  button.addEventListener('click', () => switchSuite(suite));
+  return button;
+});
+tabs.append(...tabButtons);
 
 function setMessage(text: string): void {
   message.textContent = text;
 }
 
-/** One score per subtest of the current suite. */
+/** One score per subtest of the current tab. */
 function buildScores(): void {
   scoreEls = state.suite.subtests.map((subtest) => {
     const span = document.createElement('span');
@@ -52,6 +66,14 @@ function buildScores(): void {
     return span;
   });
   scoresEl.replaceChildren(...scoreEls);
+}
+
+function updateTabs(): void {
+  SUITES.forEach((suite, i) => {
+    const selected = suite === state.suite;
+    tabButtons[i].setAttribute('aria-selected', String(selected));
+    tabButtons[i].classList.toggle('active', selected);
+  });
 }
 
 function updateText(): void {
@@ -133,8 +155,13 @@ function updateResults(): void {
   againButton.focus();
 }
 
-function apply({ state: next, event }: Result): void {
+function setState(next: State): void {
   state = next;
+  states.set(state.suite, state);
+}
+
+function apply({ state: next, event }: Result): void {
+  setState(next);
   switch (event) {
     case 'ignored':
       return;
@@ -160,8 +187,9 @@ function apply({ state: next, event }: Result): void {
   updateResults();
 }
 
-/** Redraw everything for the current state. */
+/** Redraw everything for the current state, e.g. after switching tabs. */
 function renderAll(): void {
+  updateTabs();
   buildScores();
   updateResults();
   const active = state.phase === 'demo' || state.phase === 'testing';
@@ -169,6 +197,12 @@ function renderAll(): void {
   showBoard();
   updateText();
   updatePause();
+}
+
+function switchSuite(suite: Suite): void {
+  if (suite === state.suite) return;
+  state = states.get(suite)!;
+  renderAll();
 }
 
 canvas.addEventListener('pointerdown', (e) => {
@@ -181,7 +215,7 @@ idontSeeButton.addEventListener('click', () => apply(idontSee(state)));
 nextButton.addEventListener('click', () => apply(nextTest(state, rng)));
 
 function startOver(): void {
-  state = restart(rng, state.suite);
+  setState(restart(rng, state.suite));
   renderAll();
 }
 

@@ -1,4 +1,4 @@
-export type DeficiencyType = 'normal' | 'protan' | 'deutan';
+export type DeficiencyType = 'normal' | 'protan' | 'deutan' | 'tritan';
 export type Severity = 'mild' | 'moderate' | 'severe';
 
 export interface Diagnosis {
@@ -23,6 +23,17 @@ export function diagnose([redGreen, purpleBlue, purpleGreen]: readonly number[])
   else severity = 'mild';
 
   return { type, severity };
+}
+
+/**
+ * Blue-yellow result from the single tritan score. The cut-offs mirror the
+ * red-green ones and have not been calibrated against real tritan observers.
+ */
+export function diagnoseTritan(score: number): Diagnosis {
+  if (score >= 80) return { type: 'normal', severity: null };
+  if (score < 25) return { type: 'tritan', severity: 'severe' };
+  if (score < 60) return { type: 'tritan', severity: 'moderate' };
+  return { type: 'tritan', severity: 'mild' };
 }
 
 export function describeDiagnosis({ type, severity }: Diagnosis): string {

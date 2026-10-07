@@ -9,6 +9,7 @@ import {
   type State,
 } from '../src/engine';
 import { GRID } from '../src/levels';
+import { BLUE_YELLOW } from '../src/suites';
 
 /** Deterministic pseudo-random generator so tests are repeatable. */
 function seeded(seed = 1): Rng {
@@ -169,6 +170,26 @@ describe('done', () => {
   it('restart resets scores and starts red-green', () => {
     const s = restart(rng);
     expect(s).toMatchObject({ phase: 'testing', subtest: 0, level: 0, scores: [0, 0, 0] });
+  });
+});
+
+describe('blue-yellow suite', () => {
+  it('runs a practice round, then its single subtest', () => {
+    let s = hit(createInitialState(rng, BLUE_YELLOW));
+    expect(s).toMatchObject({ phase: 'between', subtest: 0, scores: [0] });
+    s = next(s);
+    expect(s).toMatchObject({ phase: 'testing', subtest: 0 });
+    expect(s.suite).toBe(BLUE_YELLOW);
+  });
+
+  it('finishes after its subtest, even with a high score', () => {
+    const r = idontSee(hits(restart(rng, BLUE_YELLOW), 17));
+    expect(r.event).toBe('done');
+    expect(r.state.scores).toEqual([85]);
+  });
+
+  it('restart keeps the suite', () => {
+    expect(restart(rng, BLUE_YELLOW).suite).toBe(BLUE_YELLOW);
   });
 });
 

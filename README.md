@@ -22,6 +22,25 @@ apart colours along three colour axes and gives a rough screening result.
   all 20 levels. A single miss followed by a hit carries on.
 - The whole test stops early when the red-green score is above 80%.
 
+### Blue-yellow tab
+
+A separate tab tests blue-yellow (tritan) vision with a single 20-level test:
+a violet-blue block on a dark yellow background. Its colours are calculated rather
+than taken from a table. Each block differs from the background only in how
+strongly it excites the blue-sensitive (S) cones; the red and green cone
+signals are identical. That difference starts at +1800% and shrinks
+geometrically to +6% by the last level. Each tab keeps its own progress.
+
+| Blue-yellow result | Score |
+|---|---|
+| Normal | 80 or more |
+| Mild tritan-type | 60–75 |
+| Moderate tritan-type | 25–55 |
+| Severe tritan-type | below 25 |
+
+These cut-offs mirror the red-green ones and haven't been checked against
+real tritan results.
+
 ## Results
 
 With R = red-green, P = purple-blue and D = purple-green:

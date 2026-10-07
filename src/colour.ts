@@ -1,0 +1,82 @@
+import type { Hsl } from './levels';
+
+export type Vec3 = readonly [number, number, number];
+type Mat3 = readonly [Vec3, Vec3, Vec3];
+
+/** Linear sRGB to LMS cone excitations (Viénot, Brettel & Mollon 1999). */
+const RGB_TO_LMS: Mat3 = [
+  [17.8824, 43.5161, 4.11935],
+  [3.45565, 27.1554, 3.86714],
+  [0.0299566, 0.184309, 1.46709],
+];
+
+function multiply(m: Mat3, [x, y, z]: Vec3): Vec3 {
+  return [
+    m[0][0] * x + m[0][1] * y + m[0][2] * z,
+    m[1][0] * x + m[1][1] * y + m[1][2] * z,
+    m[2][0] * x + m[2][1] * y + m[2][2] * z,
+  ];
+}
+
+function invert([[a, b, c], [d, e, f], [g, h, i]]: Mat3): Mat3 {
+  const det = a * (e * i - f * h) - b * (d * i - f * g) + c * (d * h - e * g);
+  return [
+    [(e * i - f * h) / det, (c * h - b * i) / det, (b * f - c * e) / det],
+    [(f * g - d * i) / det, (a * i - c * g) / det, (c * d - a * f) / det],
+    [(d * h - e * g) / det, (b * g - a * h) / det, (a * e - b * d) / det],
+  ];
+}
+
+const LMS_TO_RGB = invert(RGB_TO_LMS);
+
+const toLinear = (c: number): number => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+const toGamma = (c: number): number => (c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055);
+
+/** sRGB (0–1 per channel) to LMS cone excitations. */
+export function srgbToLms(rgb: Vec3): Vec3 {
+  return multiply(RGB_TO_LMS, rgb.map(toLinear) as unknown as Vec3);
+}
+
+/** LMS cone excitations to sRGB (0–1 per channel, not clamped). */
+export function lmsToSrgb(lms: Vec3): Vec3 {
+  return multiply(LMS_TO_RGB, lms).map(toGamma) as unknown as Vec3;
+}
+
+/** sRGB (0–1 per channel) to HSL in CSS units, rounded to one decimal place. */
+export function srgbToHsl([r, g, b]: Vec3): Hsl {
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  const d = max - min;
+  let h = 0;
+  let s = 0;
+  if (d > 0) {
+    s = d / (1 - Math.abs(2 * l - 1));
+    if (max === r) h = ((g - b) / d) % 6;
+    else if (max === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+    h = (h * 60 + 360) % 360;
+  }
+  const round = (x: number) => Math.round(x * 10) / 10;
+  return [round(h), round(s * 100), round(l * 100)];
+}
+
+/**
+ * Colours on the tritan confusion line through `background`, from easiest to
+ * hardest. Each one only raises the S-cone (blue) excitation, by a contrast
+ * falling geometrically from `maxContrast` to `minContrast`, while L and M stay
+ * the same. People with normal colour vision see a violet-blue to mauve block;
+ * for a tritan the block matches the background.
+ */
+export function tritanSteps(
+  background: Vec3,
+  count: number,
+  maxContrast: number,
+  minContrast: number,
+): Vec3[] {
+  const [l, m, s] = srgbToLms(background);
+  return Array.from({ length: count }, (_, i) => {
+    const contrast = maxContrast * (minContrast / maxContrast) ** (i / (count - 1));
+    return lmsToSrgb([l, m, s * (1 + contrast)]);
+  });
+}
