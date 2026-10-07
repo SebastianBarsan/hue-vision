@@ -1,4 +1,5 @@
-import { DEMO, GRID, STEPS, SUBTESTS, type Hsl, type Subtest } from './levels';
+import { DEMO, GRID, STEPS, type Hsl, type Subtest } from './levels';
+import { RED_GREEN, type Suite } from './suites';
 
 export type Rng = () => number;
 
@@ -11,18 +12,20 @@ export interface Position {
 export type Phase = 'demo' | 'testing' | 'between' | 'done';
 
 export interface State {
+  /** The tab being taken: its subtests, early stop rule and diagnosis. */
+  suite: Suite;
   phase: Phase;
   /**
-   * Index into SUBTESTS: the subtest being taken, or the one about to start
-   * when between subtests. Meaningless during the demo.
+   * Index into suite.subtests: the subtest being taken, or the one about to
+   * start when between subtests. Meaningless during the demo.
    */
   subtest: number;
   /** Number of correct clicks in the current subtest. */
   level: number;
   /** True after one miss; a second consecutive miss ends the subtest. */
   strike: boolean;
-  /** Percent scores for red-green, purple-blue and purple-green. */
-  scores: readonly [number, number, number];
+  /** Percent score for each of the suite's subtests. */
+  scores: readonly number[];
   /** Target centre for every level of the current subtest. */
   positions: readonly Position[];
 }
@@ -34,9 +37,6 @@ export interface Result {
   event: Event;
 }
 
-/** Above this red-green score vision counts as normal and the test stops early. */
-export const NORMAL_RED_GREEN = 80;
-
 /** Random centre for a 3x3 block that never touches the board edge. */
 function randomPosition(rng: Rng): Position {
   const span = GRID - 2;
@@ -47,34 +47,40 @@ function randomPositions(count: number, rng: Rng): Position[] {
   return Array.from({ length: count }, () => randomPosition(rng));
 }
 
-export function createInitialState(rng: Rng): State {
+function zeroScores(suite: Suite): number[] {
+  return suite.subtests.map(() => 0);
+}
+
+export function createInitialState(rng: Rng, suite: Suite = RED_GREEN): State {
   return {
+    suite,
     phase: 'demo',
     subtest: 0,
     level: 0,
     strike: false,
-    scores: [0, 0, 0],
+    scores: zeroScores(suite),
     positions: randomPositions(DEMO.steps.length, rng),
   };
 }
 
-function startSubtest(scores: State['scores'], subtest: number, rng: Rng): State {
+function startSubtest(suite: Suite, scores: State['scores'], subtest: number, rng: Rng): State {
   return {
+    suite,
     phase: 'testing',
     subtest,
     level: 0,
     strike: false,
     scores,
-    positions: randomPositions(SUBTESTS[subtest].steps.length, rng),
+    positions: randomPositions(suite.subtests[subtest].steps.length, rng),
   };
 }
 
-export function restart(rng: Rng): State {
-  return startSubtest([0, 0, 0], 0, rng);
+export function restart(rng: Rng, suite: Suite = RED_GREEN): State {
+  return startSubtest(suite, zeroScores(suite), 0, rng);
 }
 
-function between(scores: State['scores'], subtest: number): State {
-  return { phase: 'between', subtest, level: 0, strike: false, scores, positions: [] };
+function between(suite: Suite, scores: State['scores'], subtest: number): State {
+  return { suite, phase: 'between', subtest, level: 0, strike: false, scores, positions: [] };
 }
 
 /**
@@ -82,18 +88,19 @@ function between(scores: State['scores'], subtest: number): State {
  * one, or finish the whole test.
  */
 function advance(state: State): Result {
-  if (state.phase === 'demo') return { state: between(state.scores, 0), event: 'between' };
-  const last = state.subtest === SUBTESTS.length - 1;
-  if (last || state.scores[0] > NORMAL_RED_GREEN) {
+  const { suite, scores } = state;
+  if (state.phase === 'demo') return { state: between(suite, scores, 0), event: 'between' };
+  const last = state.subtest === suite.subtests.length - 1;
+  if (last || suite.stopsEarly(scores)) {
     return { state: { ...state, phase: 'done', strike: false }, event: 'done' };
   }
-  return { state: between(state.scores, state.subtest + 1), event: 'between' };
+  return { state: between(suite, scores, state.subtest + 1), event: 'between' };
 }
 
 /** Start the subtest the user is waiting on. */
 export function nextTest(state: State, rng: Rng): Result {
   if (state.phase !== 'between') return { state, event: 'ignored' };
-  return { state: startSubtest(state.scores, state.subtest, rng), event: 'start' };
+  return { state: startSubtest(state.suite, state.scores, state.subtest, rng), event: 'start' };
 }
 
 export function click(state: State, row: number, col: number): Result {
@@ -105,7 +112,7 @@ export function click(state: State, row: number, col: number): Result {
   if (hit) {
     if (state.phase === 'demo') return advance(state);
     const level = state.level + 1;
-    const scores = [...state.scores] as [number, number, number];
+    const scores = [...state.scores];
     scores[state.subtest] = Math.floor((100 * level) / STEPS);
     const next: State = { ...state, level, strike: false, scores };
     if (level >= state.positions.length) return advance(next);
@@ -126,7 +133,7 @@ export function idontSee(state: State): Result {
  * between subtests, or the last one when done.
  */
 export function currentSubtest(state: State): Subtest {
-  return state.phase === 'demo' ? DEMO : SUBTESTS[state.subtest];
+  return state.phase === 'demo' ? DEMO : state.suite.subtests[state.subtest];
 }
 
 export function currentTarget(state: State): { position: Position; colour: Hsl } | null {
