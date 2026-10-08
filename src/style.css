@@ -32,6 +32,35 @@ h1 {
   letter-spacing: 0.04em;
 }
 
+.main-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 24px;
+  margin: 0 0 20px;
+  border-bottom: 1px solid var(--button);
+}
+
+.main-tabs button {
+  margin-bottom: -1px;
+  padding: 8px 4px;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted);
+}
+
+.main-tabs button:hover:not(:disabled) {
+  background: transparent;
+  color: var(--fg);
+}
+
+.main-tabs button.active {
+  border-bottom-color: var(--accent);
+  color: var(--fg);
+  font-weight: 600;
+}
+
 .tabs {
   display: inline-flex;
   gap: 4px;
@@ -223,4 +252,117 @@ button.primary:hover:not(:disabled) {
 button:disabled {
   opacity: 0.4;
   cursor: default;
+}
+
+/* Colour Recall game. */
+.timer {
+  width: min(320px, 100%);
+  height: 6px;
+  margin: 0 auto 16px;
+  border-radius: 3px;
+  background: var(--button);
+  overflow: hidden;
+}
+
+.timer span {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--accent);
+}
+
+.swatch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(320px, 100%);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  border-radius: 16px;
+  background: var(--button);
+  color: var(--muted);
+  font-size: 4rem;
+  font-weight: 700;
+}
+
+.swatch.small {
+  width: 140px;
+  font-size: 1rem;
+}
+
+.sliders {
+  display: grid;
+  gap: 6px;
+  width: min(360px, 100%);
+  margin: 20px auto 0;
+  text-align: left;
+}
+
+.sliders label {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.colour-slider {
+  width: 100%;
+  height: 18px;
+  margin: 0 0 10px;
+  border-radius: 9px;
+  background: var(--track, var(--button));
+  appearance: none;
+  cursor: pointer;
+}
+
+.colour-slider:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.colour-slider::-webkit-slider-thumb {
+  width: 22px;
+  height: 22px;
+  border: 3px solid var(--fg);
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: 0 0 0 1px var(--bg);
+  appearance: none;
+}
+
+.colour-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: 3px solid var(--fg);
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: 0 0 0 1px var(--bg);
+}
+
+.points {
+  margin: 0 0 20px;
+  color: var(--muted);
+  font-size: 1.2rem;
+}
+
+.points b {
+  color: var(--accent);
+  font-size: 3rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.compare {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 0 0 16px;
+}
+
+.compare figure {
+  margin: 0;
+}
+
+.compare figcaption {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.4;
 }

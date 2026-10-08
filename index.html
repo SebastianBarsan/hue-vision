@@ -3,38 +3,80 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mosaic Colour Test</title>
+    <title>Colour Vision Test</title>
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
     <main class="app">
-      <h1>Mosaic Colour Test</h1>
-      <nav id="tabs" class="tabs" role="tablist" aria-label="Tests"></nav>
-      <p id="scores" class="scores"></p>
-      <p id="stage" class="stage"></p>
-      <p id="message" class="message" aria-live="polite"></p>
-      <div class="board">
-        <canvas id="mosaic" aria-label="Mosaic of coloured squares"></canvas>
-        <div id="pause" class="pause" hidden>
-          <p id="pause-text"></p>
-          <button id="next" type="button" class="primary">Next test</button>
+      <h1>Colour Vision Test</h1>
+      <nav class="main-tabs" role="tablist" aria-label="Tests">
+        <button id="tab-mosaic" type="button" role="tab" aria-controls="mosaic-view">Colour Mosaic</button>
+        <button id="tab-game" type="button" role="tab" aria-controls="game-view">Colour Recall</button>
+      </nav>
+      <section id="mosaic-view" role="tabpanel" aria-labelledby="tab-mosaic">
+        <nav id="tabs" class="tabs" role="tablist" aria-label="Mosaic tests"></nav>
+        <p id="scores" class="scores"></p>
+        <p id="stage" class="stage"></p>
+        <p id="message" class="message" aria-live="polite"></p>
+        <div class="board">
+          <canvas id="mosaic" aria-label="Mosaic of coloured squares"></canvas>
+          <div id="pause" class="pause" hidden>
+            <p id="pause-text"></p>
+            <button id="next" type="button" class="primary">Next test</button>
+          </div>
         </div>
-      </div>
-      <div id="controls" class="buttons">
-        <button id="idontsee" type="button">I don't see</button>
-        <button id="restart" type="button">Restart</button>
-      </div>
-      <section id="results" class="results" aria-labelledby="results-title" hidden>
-        <h2 id="results-title">Your results</h2>
-        <p id="diagnosis" class="diagnosis"></p>
-        <ul id="result-scores" class="result-scores"></ul>
-        <p id="skipped-note" class="note" hidden></p>
-        <p class="note">
-          This is a screening tool, not a medical diagnosis. Results depend on your
-          screen's colour calibration and brightness. If you have concerns about your
-          colour vision, see an optometrist.
-        </p>
-        <button id="again" type="button" class="primary">Take the test again</button>
+        <div id="controls" class="buttons">
+          <button id="idontsee" type="button">I don't see</button>
+          <button id="restart" type="button">Restart</button>
+        </div>
+        <section id="results" class="results" aria-labelledby="results-title" hidden>
+          <h2 id="results-title">Your results</h2>
+          <p id="diagnosis" class="diagnosis"></p>
+          <ul id="result-scores" class="result-scores"></ul>
+          <p id="skipped-note" class="note" hidden></p>
+          <p class="note">
+            This is a screening tool, not a medical diagnosis. Results depend on your
+            screen's colour calibration and brightness. If you have concerns about your
+            colour vision, see an optometrist.
+          </p>
+          <button id="again" type="button" class="primary">Take the test again</button>
+        </section>
+      </section>
+      <section id="game-view" role="tabpanel" aria-labelledby="tab-game" hidden>
+        <div id="game-play">
+          <p id="game-stage" class="stage">How well can you remember a colour?</p>
+          <p id="game-message" class="message" aria-live="polite"></p>
+          <div class="timer" aria-hidden="true"><span id="game-timer"></span></div>
+          <div id="game-swatch" class="swatch" aria-hidden="true"></div>
+          <div class="sliders">
+            <label for="hue-slider">Hue</label>
+            <input id="hue-slider" class="colour-slider" type="range" min="0" max="360" step="1" />
+            <label for="saturation-slider">Saturation</label>
+            <input id="saturation-slider" class="colour-slider" type="range" min="0" max="100" step="1" />
+            <label for="brightness-slider">Brightness</label>
+            <input id="brightness-slider" class="colour-slider" type="range" min="0" max="100" step="1" />
+          </div>
+          <div class="buttons">
+            <button id="game-start" type="button" class="primary">Start</button>
+            <button id="game-lock" type="button" class="primary" hidden>Lock in</button>
+          </div>
+        </div>
+        <section id="game-result" class="results" aria-labelledby="game-points" hidden>
+          <p id="game-verdict" class="note"></p>
+          <p class="points"><b id="game-points"></b> / 1000</p>
+          <div class="compare">
+            <figure>
+              <div id="result-target" class="swatch small"></div>
+              <figcaption>Target<br /><span id="result-target-value"></span></figcaption>
+            </figure>
+            <figure>
+              <div id="result-guess" class="swatch small"></div>
+              <figcaption>Yours<br /><span id="result-guess-value"></span></figcaption>
+            </figure>
+          </div>
+          <p id="game-best" class="note"></p>
+          <button id="game-again" type="button" class="primary">Play again</button>
+        </section>
       </section>
     </main>
     <script type="module" src="/src/main.ts"></script>
