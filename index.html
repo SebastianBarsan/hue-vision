@@ -12,6 +12,7 @@
       <nav class="main-tabs" role="tablist" aria-label="Tests">
         <button id="tab-mosaic" type="button" role="tab" aria-controls="mosaic-view">Colour Mosaic</button>
         <button id="tab-game" type="button" role="tab" aria-controls="game-view">Colour Recall</button>
+        <button id="tab-hue" type="button" role="tab" aria-controls="hue-view">Hue Order</button>
       </nav>
       <section id="mosaic-view" role="tabpanel" aria-labelledby="tab-mosaic">
         <nav id="tabs" class="tabs" role="tablist" aria-label="Mosaic tests"></nav>
@@ -76,6 +77,29 @@
           </div>
           <p id="game-best" class="note"></p>
           <button id="game-again" type="button" class="primary">Play again</button>
+        </section>
+      </section>
+      <section id="hue-view" role="tabpanel" aria-labelledby="tab-hue" hidden>
+        <div id="hue-play">
+          <p id="hue-stage" class="stage">Can you put the colours back in order?</p>
+          <p id="hue-message" class="message" aria-live="polite"></p>
+          <div class="timer" aria-hidden="true"><span id="hue-timer"></span></div>
+          <div id="hue-row" class="hue-row" aria-label="Colour blocks"></div>
+          <p class="note hue-help">Drag a block to move it, or tap two blocks to swap them.</p>
+          <div class="buttons">
+            <button id="hue-start" type="button" class="primary">Start</button>
+            <button id="hue-give-up" type="button" hidden>Finish now</button>
+          </div>
+        </div>
+        <section id="hue-result" class="results" aria-labelledby="hue-points" hidden>
+          <p id="hue-verdict" class="note"></p>
+          <p class="points"><b id="hue-points"></b> / 1000</p>
+          <p class="hue-caption">Your order</p>
+          <div id="hue-yours" class="hue-row small"></div>
+          <p class="hue-caption">Sorted</p>
+          <div id="hue-sorted" class="hue-row small"></div>
+          <p id="hue-best" class="note"></p>
+          <button id="hue-again" type="button" class="primary">Play again</button>
         </section>
       </section>
     </main>

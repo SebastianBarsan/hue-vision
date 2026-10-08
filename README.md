@@ -1,12 +1,13 @@
 # colourblind_test
 
-A browser-based test of colour vision and a colour memory game, each in its
-own tab:
+A browser-based test of colour vision and two colour games, each in its own
+tab:
 
 - **Colour Mosaic**: find a block of slightly different colour in a
   flickering mosaic. It has two sub-tabs, Red-green and Blue-yellow, and gives
   a rough screening result.
 - **Colour Recall**: memorise a colour, then recreate it from memory.
+- **Hue Order**: sort a shuffled scale of colours back into order.
 
 > This is a screening tool, not a medical diagnosis. Results depend on your
 > screen's colour calibration and brightness.
@@ -98,6 +99,32 @@ the sliders' current colour is your answer.
   15° off in hue about 640.
 - Your best score is kept in the browser.
 
+## Hue Order
+
+A game in the spirit of hue-ordering tests such as the Farnsworth D-15. A
+scale of **15 blocks** that blends from one colour to another is shuffled,
+and you have **30 seconds** to put it back in order. Drag a block to move it, or tap two
+blocks to swap them (keyboard: Tab to a block, Enter on two blocks to swap).
+The round ends as soon as the scale is sorted, when time runs out, or on
+**Finish now**.
+
+- Each round picks one of six scales, never the same one twice in a row:
+  Red → Yellow, Yellow → Green, Cyan → Blue, Blue → Purple, Purple → Pink and
+  Magenta → Red. The scale's name is shown while you play.
+- The blocks blend evenly in OKLCH between two vivid end colours. Where the
+  blend would go beyond what the screen can show, its chroma is reduced just
+  enough to fit. Neighbouring blocks differ by about 0.02–0.04 in OKLab, close
+  to the smallest difference people can see, so it's meant to be hard. Green →
+  cyan is left out because the screen can't show vivid enough colours in
+  between.
+- Either direction counts as sorted.
+- A fresh shuffle has at most 2 blocks already next to their correct
+  neighbour.
+- **Points out of 1000**: a sorted scale scores 700 plus up to 300 for the time
+  left. An unsorted one scores 700 times the share of its 14 neighbouring
+  pairs that are correct.
+- Your best score is kept in the browser.
+
 ## Running it
 
 Requires Node.js 20 or later.
@@ -123,6 +150,8 @@ npm run build    # static build in dist/
 | `src/mosaic.ts` | Connects the mosaic page, buttons and canvas to the engine |
 | `src/colour-game.ts` | Colour Recall's colours, timings and scoring |
 | `src/colour-game-view.ts` | Colour Recall's page, sliders and timers |
-| `tests/` | Vitest unit tests for the colours, engine, diagnosis and Colour Recall |
+| `src/hue-order.ts` | Hue Order's colours, shuffling and scoring |
+| `src/hue-order-view.ts` | Hue Order's page, dragging and timer |
+| `tests/` | Vitest unit tests for the colours, engine, diagnosis and both games |
 
 Built with Vite and TypeScript, with no UI framework.

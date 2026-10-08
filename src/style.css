@@ -366,3 +366,64 @@ button:disabled {
   font-size: 0.85rem;
   line-height: 1.4;
 }
+
+/* Hue Order game. */
+.hue-row {
+  display: flex;
+  gap: 3px;
+  width: 100%;
+  margin: 0 auto;
+  touch-action: none;
+  user-select: none;
+}
+
+.hue-block {
+  flex: 1;
+  min-width: 0;
+  height: 96px;
+  padding: 0;
+  border-radius: 6px;
+  transition: transform 0.12s;
+}
+
+.hue-block:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+.hue-block:disabled {
+  cursor: default;
+}
+
+.hue-block.selected {
+  outline: 3px solid var(--fg);
+  outline-offset: 2px;
+  transform: translateY(-6px);
+}
+
+.hue-block.dragging {
+  transform: translateY(-10px) scale(1.06);
+  box-shadow: 0 6px 16px rgb(0 0 0 / 0.5);
+  z-index: 1;
+}
+
+.hue-row.small {
+  gap: 2px;
+  margin-bottom: 12px;
+}
+
+.hue-row.small span {
+  flex: 1;
+  height: 32px;
+  border-radius: 4px;
+}
+
+.hue-help {
+  margin-top: 12px;
+}
+
+.hue-caption {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-align: left;
+}

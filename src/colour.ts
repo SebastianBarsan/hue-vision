@@ -62,6 +62,26 @@ export function srgbToOklab(rgb: Vec3): Vec3 {
   );
 }
 
+/** OKLab to sRGB (0–1 per channel, not clamped). */
+export function oklabToSrgb(lab: Vec3): Vec3 {
+  const lms = multiply(
+    [
+      [1, 0.3963377774, 0.2158037573],
+      [1, -0.1055613458, -0.0638541728],
+      [1, -0.0894841775, -1.291485548],
+    ],
+    lab,
+  ).map((c) => c ** 3) as unknown as Vec3;
+  return multiply(
+    [
+      [4.0767416621, -3.3077115913, 0.2309699292],
+      [-1.2684380046, 2.6097574011, -0.3413193965],
+      [-0.0041960863, -0.7034186147, 1.707614701],
+    ],
+    lms,
+  ).map(toGamma) as unknown as Vec3;
+}
+
 /** sRGB (0–1 per channel) to HSL in CSS units, rounded to two decimal places. */
 export function srgbToHsl([r, g, b]: Vec3): Hsl {
   const max = Math.max(r, g, b);

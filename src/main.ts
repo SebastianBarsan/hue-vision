@@ -1,10 +1,12 @@
 import { onMosaicShown } from './mosaic';
 import './colour-game-view';
+import './hue-order-view';
 
-/** The two top-level tabs. Each keeps its progress while hidden. */
+/** The top-level tabs. Each keeps its progress while hidden. */
 const views = [
   { tab: document.querySelector<HTMLButtonElement>('#tab-mosaic')!, onShow: onMosaicShown },
   { tab: document.querySelector<HTMLButtonElement>('#tab-game')!, onShow: () => {} },
+  { tab: document.querySelector<HTMLButtonElement>('#tab-hue')!, onShow: () => {} },
 ];
 
 function select(selected: (typeof views)[number]): void {
