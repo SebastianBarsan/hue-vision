@@ -427,3 +427,59 @@ button:disabled {
   font-size: 0.85rem;
   text-align: left;
 }
+
+/* How-you-see-it simulation under the mosaic results. */
+.simulation {
+  margin: 32px 0 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--button);
+}
+
+.simulation h2 {
+  margin: 0 0 8px;
+  font-size: 1.15rem;
+}
+
+.simulation .note {
+  max-width: 480px;
+  margin-inline: auto;
+}
+
+.sim-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 12px;
+}
+
+.sim-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 8px 0 16px;
+}
+
+.sim-compare figure {
+  margin: 0;
+}
+
+.sim-compare canvas {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  cursor: default;
+}
+
+.sim-compare figcaption {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 520px) {
+  .sim-compare {
+    grid-template-columns: 1fr;
+  }
+}

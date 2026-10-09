@@ -42,6 +42,27 @@
           </p>
           <button id="again" type="button" class="primary">Take the test again</button>
         </section>
+        <section id="simulation" class="simulation" aria-labelledby="sim-title" hidden>
+          <h2 id="sim-title"></h2>
+          <p id="sim-intro" class="note"></p>
+          <div id="sim-types" class="tabs sim-options" role="group" aria-label="Deficiency type"></div>
+          <div id="sim-severities" class="tabs sim-options" role="group" aria-label="Severity"></div>
+          <div class="sim-compare">
+            <figure>
+              <canvas id="sim-original" aria-label="Picture as seen with normal colour vision"></canvas>
+              <figcaption>Normal vision</figcaption>
+            </figure>
+            <figure>
+              <canvas id="sim-simulated" aria-label="The same picture with the simulated deficiency"></canvas>
+              <figcaption id="sim-caption"></figcaption>
+            </figure>
+          </div>
+          <div id="sim-scenes" class="tabs sim-options" role="group" aria-label="Picture"></div>
+          <p class="note">
+            Simulated with the Machado, Oliveira &amp; Fernandes (2009) model. It's an
+            approximation: everyone's colour vision is a little different.
+          </p>
+        </section>
       </section>
       <section id="game-view" role="tabpanel" aria-labelledby="tab-game" hidden>
         <div id="game-play">

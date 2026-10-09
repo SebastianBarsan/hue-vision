@@ -10,6 +10,7 @@ import {
   type State,
 } from './engine';
 import { MosaicRenderer } from './renderer';
+import { showSimulation } from './simulation-view';
 import { SUITES, type Suite } from './suites';
 
 const rng = Math.random;
@@ -36,6 +37,7 @@ const diagnosisEl = document.querySelector<HTMLElement>('#diagnosis')!;
 const resultScores = document.querySelector<HTMLElement>('#result-scores')!;
 const skippedNote = document.querySelector<HTMLElement>('#skipped-note')!;
 const againButton = document.querySelector<HTMLButtonElement>('#again')!;
+const simulation = document.querySelector<HTMLElement>('#simulation')!;
 
 const renderer = new MosaicRenderer(canvas);
 
@@ -127,9 +129,11 @@ function updateResults(): void {
   const done = state.phase === 'done';
   testView.forEach((el) => (el.hidden = done));
   results.hidden = !done;
+  simulation.hidden = !done;
   if (!done) return;
 
   const { suite } = state;
+  showSimulation(suite.diagnose(state.scores));
   diagnosisEl.textContent = suite.describe(state.scores);
   // Subtests after the last one taken were skipped by the suite's early stop.
   resultScores.replaceChildren(

@@ -1,4 +1,4 @@
-import { describeDiagnosis, diagnose, diagnoseTritan } from './diagnosis';
+import { describeDiagnosis, diagnose, diagnoseTritan, type Diagnosis } from './diagnosis';
 import { BLUE_YELLOW_SUBTEST, SUBTESTS, type Subtest } from './levels';
 
 /** One tab: a practice round, then its subtests in order. */
@@ -8,6 +8,8 @@ export interface Suite {
   subtests: readonly Subtest[];
   /** True when the scores so far make the remaining subtests unnecessary. */
   stopsEarly(scores: readonly number[]): boolean;
+  /** Deficiency type and severity for the final scores. */
+  diagnose(scores: readonly number[]): Diagnosis;
   /** Result headline for the final scores. */
   describe(scores: readonly number[]): string;
   /** Shown on the results screen when stopsEarly skipped subtests. */
@@ -22,6 +24,7 @@ export const RED_GREEN: Suite = {
   name: 'Red-green',
   subtests: SUBTESTS,
   stopsEarly: (scores) => scores[0] > NORMAL_RED_GREEN,
+  diagnose,
   describe: (scores) => describeDiagnosis(diagnose(scores)),
   skippedNote: "Your red-green score was above 80%, so the other tests weren't needed.",
 };
@@ -31,6 +34,7 @@ export const BLUE_YELLOW: Suite = {
   name: 'Blue-yellow',
   subtests: [BLUE_YELLOW_SUBTEST],
   stopsEarly: () => false,
+  diagnose: ([score]) => diagnoseTritan(score),
   describe: ([score]) => {
     const diagnosis = diagnoseTritan(score);
     // This tab alone can't rule out red-green deficiencies.

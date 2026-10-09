@@ -82,6 +82,22 @@ With R = red-green, P = purple-blue and D = purple-green:
 None of the cut-offs, in either mosaic tab, have been checked against people with
 known colour vision deficiencies.
 
+### How you might see it
+
+The results screen of each mosaic tab ends with a side-by-side simulation: an
+everyday picture as seen with normal colour vision, and the same picture as
+seen with the deficiency the test found. There are five pictures (traffic
+lights, strawberries, a pie chart, a metro map and a rainbow). All of them are
+drawn on a canvas in `src/scenes.ts`, so no images are copied. You can switch to
+any type (protan, deutan, tritan) and severity. After a normal result, it starts
+on moderate deutan, the most common deficiency.
+
+The simulation uses the full-strength matrices from Machado, Oliveira &
+Fernandes (2009), applied in linear RGB. Milder severities blend the matrix
+with the identity: mild 40%, moderate 70%, severe 100%. Someone with the
+deficiency will see the two pictures as about the same. The simulation is mainly
+for showing other people how the pictures look to them.
+
 ## Colour Recall
 
 A game rather than a test. A random colour is shown for **5 seconds**, then
@@ -146,6 +162,9 @@ npm run build    # static build in dist/
 | `src/engine.ts` | Test rules as a pure state machine (clicks, misses, scoring, moving between tests) |
 | `src/diagnosis.ts` | Turns the three scores into a result |
 | `src/renderer.ts` | Canvas drawing, lightness flicker and click-to-tile mapping |
+| `src/simulate.ts` | Colour vision deficiency simulation matrices and per-pixel filter |
+| `src/scenes.ts` | The everyday pictures drawn for the simulation |
+| `src/simulation-view.ts` | The how-you-might-see-it section on the mosaic results screen |
 | `src/main.ts` | Switches between the two top-level tabs |
 | `src/mosaic.ts` | Connects the mosaic page, buttons and canvas to the engine |
 | `src/colour-game.ts` | Colour Recall's colours, timings and scoring |
