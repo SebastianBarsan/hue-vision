@@ -29,8 +29,8 @@ function invert([[a, b, c], [d, e, f], [g, h, i]]: Mat3): Mat3 {
 
 const LMS_TO_RGB = invert(RGB_TO_LMS);
 
-const toLinear = (c: number): number => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
-const toGamma = (c: number): number => (c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055);
+export const toLinear = (c: number): number => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+export const toGamma = (c: number): number => (c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055);
 
 /** sRGB (0–1 per channel) to LMS cone excitations. */
 export function srgbToLms(rgb: Vec3): Vec3 {
