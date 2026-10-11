@@ -106,10 +106,11 @@
           <p id="hue-message" class="message" aria-live="polite"></p>
           <div class="timer" aria-hidden="true"><span id="hue-timer"></span></div>
           <div id="hue-row" class="hue-row" aria-label="Colour blocks"></div>
-          <p class="note hue-help">Drag a block to move it, or tap two blocks to swap them.</p>
+          <p id="hue-help" class="note hue-help" aria-live="polite">Drag a block to move it, or tap two blocks to swap them.</p>
           <div class="buttons">
             <button id="hue-start" type="button" class="primary">Start</button>
-            <button id="hue-give-up" type="button" hidden>Finish now</button>
+            <button id="hue-submit" type="button" class="primary" hidden>Submit</button>
+            <button id="hue-give-up" type="button" hidden>Give up</button>
           </div>
         </div>
         <section id="hue-result" class="results" aria-labelledby="hue-points" hidden>

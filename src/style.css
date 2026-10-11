@@ -421,6 +421,10 @@ button:disabled {
   margin-top: 12px;
 }
 
+.hue-help.wrong {
+  color: var(--accent);
+}
+
 .hue-caption {
   margin: 0 0 6px;
   color: var(--muted);

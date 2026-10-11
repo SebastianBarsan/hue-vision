@@ -23,6 +23,9 @@ const message = document.querySelector<HTMLElement>('#hue-message')!;
 const timerBar = document.querySelector<HTMLElement>('#hue-timer')!;
 const row = document.querySelector<HTMLElement>('#hue-row')!;
 const startButton = document.querySelector<HTMLButtonElement>('#hue-start')!;
+const help = document.querySelector<HTMLElement>('#hue-help')!;
+const HELP = help.textContent!;
+const submitButton = document.querySelector<HTMLButtonElement>('#hue-submit')!;
 const finishButton = document.querySelector<HTMLButtonElement>('#hue-give-up')!;
 const result = document.querySelector<HTMLElement>('#hue-result')!;
 const verdictEl = document.querySelector<HTMLElement>('#hue-verdict')!;
@@ -66,10 +69,23 @@ function render(): void {
   row.replaceChildren(...order.map((id) => blocks[id]));
 }
 
+/** Show `text` under the blocks, or the usual instructions when it's null. */
+function showHelp(text: string | null): void {
+  help.textContent = text ?? HELP;
+  help.classList.toggle('wrong', text !== null);
+}
+
 function changeOrder(next: number[]): void {
   order = next;
+  showHelp(null);
   render();
+}
+
+/** End the round if the order is right; otherwise let the player keep going. */
+function submit(): void {
+  if (phase !== 'playing') return;
   if (isSorted(order)) finish();
+  else showHelp('Not quite right yet. Keep trying!');
 }
 
 function tap(id: number): void {
@@ -158,7 +174,9 @@ function start(): void {
   play.hidden = false;
   result.hidden = true;
   startButton.hidden = true;
+  submitButton.hidden = false;
   finishButton.hidden = false;
+  showHelp(null);
   stage.textContent = `Sort the colours into a smooth scale: ${scale.name}`;
   render();
 }
@@ -202,6 +220,7 @@ function tick(now: number): void {
 }
 
 startButton.addEventListener('click', start);
+submitButton.addEventListener('click', submit);
 finishButton.addEventListener('click', finish);
 againButton.addEventListener('click', start);
 
