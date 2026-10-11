@@ -32,11 +32,11 @@ const RED_GREEN_STEPS = confusionSteps(RED_GREEN_BACKGROUND, CONFUSION.redGreen,
 
 /*
  * A change in one cone alone looks much fainter than the same contrast split
- * across L and M, so equal contrasts would make the protan and deutan
- * subtests far harder than red-green. Instead each of their levels shows the
- * same colour difference as the red-green level, so normal vision scores
- * about the same on all three and the protan and deutan scores stay
- * comparable with each other.
+ * across L and M, so equal contrasts would make the single-cone subtests far
+ * harder than red-green. Instead each of their levels shows the same colour
+ * difference as the red-green level, so normal vision scores about the same on
+ * every subtest and the protan and deutan scores stay comparable with each
+ * other.
  */
 const RED_GREEN_DIFFERENCES = RED_GREEN_STEPS.map((step) => chromaDifference(step, RED_GREEN_BACKGROUND));
 
@@ -54,13 +54,9 @@ export const SUBTESTS: readonly Subtest[] = [
 ];
 
 /**
- * Dark yellow. Only the S-cone signal may change, so the easiest target on a
- * yellow background is violet-blue rather than pure blue (that would need a
- * yellow-green background).
+ * Olive-yellow. Only the S-cone signal may change, which moves the target
+ * towards violet: no S-only change turns yellow into a true blue. The target
+ * stays about as light as the background, so a darker yellow keeps it a
+ * saturated blue-violet rather than lavender.
  */
-const BLUE_YELLOW_BACKGROUND: Vec3 = [0.6, 0.62, 0.03];
-export const BLUE_YELLOW_SUBTEST = subtest(
-  'Blue-yellow',
-  BLUE_YELLOW_BACKGROUND,
-  confusionSteps(BLUE_YELLOW_BACKGROUND, CONFUSION.tritan, STEPS, 18, 0.06),
-);
+export const BLUE_YELLOW_SUBTEST = matched('Blue-yellow', [0.52, 0.55, 0], CONFUSION.tritan);

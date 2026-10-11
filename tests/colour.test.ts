@@ -81,8 +81,9 @@ describe.each([...SUBTESTS, BLUE_YELLOW_SUBTEST].map((t) => [t.name, t] as const
   });
 });
 
-describe('protan and deutan subtests', () => {
-  const [redGreen, ...matched] = SUBTESTS;
+describe('single-cone subtests', () => {
+  const [redGreen, ...rest] = SUBTESTS;
+  const matched = [...rest, BLUE_YELLOW_SUBTEST];
   const differences = (subtest: Subtest) =>
     subtest.steps.map((step) => chromaDifference(hslToSrgb(step), hslToSrgb(subtest.background)));
 

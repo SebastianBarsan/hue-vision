@@ -60,9 +60,13 @@ is hidden by the flicker.
 ### Blue-yellow sub-tab
 
 A separate sub-tab tests blue-yellow (tritan) vision with a single 20-level test:
-a violet-blue block on a dark yellow background. The S-cone contrast starts at
-+1800% and shrinks geometrically to +6% by the last level. Each tab keeps its
-own progress.
+a blue-violet block on an olive-yellow background. Only the S-cone signal
+changes, which always moves the target towards violet, so a true blue isn't
+possible without breaking the tritan isolation. The background is kept fairly
+dark because the target stays about as light as it, and a light yellow gives a
+pale lavender target. Like the Purple-blue and Orange-green tests, each level
+shows the same visible colour difference as the matching Red-green level.
+Each tab keeps its own progress.
 
 | Blue-yellow result | Score |
 |---|---|
