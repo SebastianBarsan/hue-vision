@@ -20,8 +20,8 @@ tab:
   differences, so the block can only be found by its hue.
 - The Red-green sub-tab starts with a grey practice round, then three tests:
   1. **Red-green**: a red block on a dark green background
-  2. **Purple-blue**: a blue block on a purple background
-  3. **Purple-green**: a teal block on a pink-purple background
+  2. **Purple-blue**: a blue block on a violet background
+  3. **Orange-green**: a green block on an orange background
 - Each test has 20 levels. Each correct click adds 5% and moves to a block whose
   colour is closer to the background.
 - A test ends after **two misses in a row**, after **I don't see**, or after
@@ -40,14 +40,22 @@ can't use.
 |---|---|---|
 | Red-green | L (red) cone up, M (green) cone down by the same contrast | protans and deutans |
 | Purple-blue | L cone down only | protans |
-| Purple-green | M cone up only | deutans |
+| Orange-green | M cone up only | deutans |
 | Blue-yellow | S (blue) cone up only | tritans |
 
-The three red-green tab tests share one range: the cone contrast starts at
-50% and shrinks geometrically to 1% by the last level. 50% is close to the
-screen gamut's limit for these backgrounds, and 1% is about the smallest change
-an 8-bit screen can show. Any brightness difference left over is hidden by the
-flicker.
+In the Red-green test the cone contrast starts at 50% and shrinks
+geometrically to 1% by the last level. 50% is close to the screen gamut's limit
+for that background, and 1% is about the smallest change an 8-bit screen can
+show.
+
+A change in one cone alone looks much fainter than the same contrast split
+across two, so the Purple-blue and Orange-green tests don't reuse those
+contrasts. Instead each level is set to the same visible colour difference
+(OKLab chroma distance) as the matching Red-green level, so normal vision
+scores about the same on all three. From 35% on they match exactly; the
+easiest levels are capped a little lower because the screen gamut can't show
+a bigger difference on those backgrounds. Any brightness difference left over
+is hidden by the flicker.
 
 ### Blue-yellow sub-tab
 
@@ -65,7 +73,7 @@ own progress.
 
 ### Mosaic results
 
-With R = red-green, P = purple-blue and D = purple-green:
+With R = red-green, P = purple-blue and D = orange-green:
 
 | Result | Rule |
 |---|---|

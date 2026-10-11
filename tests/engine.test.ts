@@ -138,7 +138,7 @@ describe('scoring', () => {
     expect(s.subtest).toBe(1);
   });
 
-  it('100% on purple-blue moves on to purple-green', () => {
+  it('100% on purple-blue moves on to orange-green', () => {
     let s = next(skip(restart(rng)));
     s = hits(s, 20);
     expect(s.subtest).toBe(2);

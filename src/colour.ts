@@ -139,3 +139,45 @@ export function confusionSteps(
     return lmsToSrgb(lms.map((c, j) => c * (1 + contrast * direction[j])) as unknown as Vec3);
   });
 }
+
+/**
+ * Distance between two sRGB colours in OKLab's a-b plane. Lightness is left
+ * out because the flicker hides it.
+ */
+export function chromaDifference(a: Vec3, b: Vec3): number {
+  const [, a1, b1] = srgbToOklab(a);
+  const [, a2, b2] = srgbToOklab(b);
+  return Math.hypot(a1 - a2, b1 - b2);
+}
+
+/** Largest x in [0, max] for which `ok` holds, when it holds below some threshold. */
+function bisect(ok: (x: number) => boolean, max: number): number {
+  let lo = 0;
+  let hi = max;
+  for (let i = 0; i < 50; i++) {
+    const mid = (lo + hi) / 2;
+    if (ok(mid)) lo = mid;
+    else hi = mid;
+  }
+  return lo;
+}
+
+/**
+ * Target colours along `direction` from `background` whose chroma differences
+ * from it match `differences`, so a normal observer finds each level as hard
+ * as the matching level of another subtest. Differences beyond what the
+ * screen gamut allows are softly capped just below that limit, which keeps
+ * the easiest levels in gamut and in order.
+ */
+export function matchedSteps(background: Vec3, direction: Vec3, differences: readonly number[]): Vec3[] {
+  const lms = srgbToLms(background);
+  const at = (contrast: number) =>
+    lmsToSrgb(lms.map((c, j) => c * (1 + contrast * direction[j])) as unknown as Vec3);
+  // S-cone contrasts on a yellow background run into the thousands of percent.
+  const maxContrast = bisect((contrast) => at(contrast).every((c) => c >= 0 && c <= 1), 1000);
+  const cap = chromaDifference(at(maxContrast), background);
+  return differences.map((difference) => {
+    const target = (difference ** -4 + cap ** -4) ** -0.25;
+    return at(bisect((contrast) => chromaDifference(at(contrast), background) <= target, maxContrast));
+  });
+}

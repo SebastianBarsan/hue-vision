@@ -1,4 +1,4 @@
-import { CONFUSION, confusionSteps, srgbToHsl, type Vec3 } from './colour';
+import { chromaDifference, CONFUSION, confusionSteps, matchedSteps, srgbToHsl, type Vec3 } from './colour';
 
 export type Hsl = readonly [h: number, s: number, l: number];
 
@@ -18,37 +18,39 @@ export const DEMO: Subtest = {
   steps: [[0, 0, 60]],
 };
 
-/** A subtest whose targets step along a cone-contrast direction from `background` (sRGB). */
-function generated(
-  name: string,
-  background: Vec3,
-  direction: Vec3,
-  maxContrast: number,
-  minContrast: number,
-): Subtest {
-  return {
-    name,
-    background: srgbToHsl(background),
-    steps: confusionSteps(background, direction, STEPS, maxContrast, minContrast).map(srgbToHsl),
-  };
+function subtest(name: string, background: Vec3, steps: readonly Vec3[]): Subtest {
+  return { name, background: srgbToHsl(background), steps: steps.map(srgbToHsl) };
 }
 
 /*
- * The red-green subtests share one contrast range, so the purple-blue (protan)
- * and purple-green (deutan) scores can be compared with each other. 50% is
- * close to the largest contrast the screen gamut allows for these backgrounds;
- * 1% is about the smallest change an 8-bit screen can still show.
+ * Red-green steps from 50% cone contrast, close to the largest the screen
+ * gamut allows on this background, down to 1%, about the smallest change an
+ * 8-bit screen can still show.
  */
-const MAX_CONTRAST = 0.5;
-const MIN_CONTRAST = 0.01;
+const RED_GREEN_BACKGROUND: Vec3 = [0.05, 0.45, 0];
+const RED_GREEN_STEPS = confusionSteps(RED_GREEN_BACKGROUND, CONFUSION.redGreen, STEPS, 0.5, 0.01);
+
+/*
+ * A change in one cone alone looks much fainter than the same contrast split
+ * across L and M, so equal contrasts would make the protan and deutan
+ * subtests far harder than red-green. Instead each of their levels shows the
+ * same colour difference as the red-green level, so normal vision scores
+ * about the same on all three and the protan and deutan scores stay
+ * comparable with each other.
+ */
+const RED_GREEN_DIFFERENCES = RED_GREEN_STEPS.map((step) => chromaDifference(step, RED_GREEN_BACKGROUND));
+
+function matched(name: string, background: Vec3, direction: Vec3): Subtest {
+  return subtest(name, background, matchedSteps(background, direction, RED_GREEN_DIFFERENCES));
+}
 
 export const SUBTESTS: readonly Subtest[] = [
   // Dark green background; the easiest target is red.
-  generated('Red-green', [0.05, 0.45, 0], CONFUSION.redGreen, MAX_CONTRAST, MIN_CONTRAST),
-  // Purple background; less L-cone signal turns the target blue.
-  generated('Purple-blue', [0.6, 0, 0.6], CONFUSION.protan, MAX_CONTRAST, MIN_CONTRAST),
-  // Pink-purple background; more M-cone signal turns the target teal.
-  generated('Purple-green', [0.65, 0, 0.4], CONFUSION.deutan, MAX_CONTRAST, MIN_CONTRAST),
+  subtest('Red-green', RED_GREEN_BACKGROUND, RED_GREEN_STEPS),
+  // Violet background; less L-cone signal turns the target blue.
+  matched('Purple-blue', [0.7, 0.1, 0.9], CONFUSION.protan),
+  // Orange background; more M-cone signal turns the target green.
+  matched('Orange-green', [0.75, 0.45, 0.15], CONFUSION.deutan),
 ];
 
 /**
@@ -56,4 +58,9 @@ export const SUBTESTS: readonly Subtest[] = [
  * yellow background is violet-blue rather than pure blue (that would need a
  * yellow-green background).
  */
-export const BLUE_YELLOW_SUBTEST = generated('Blue-yellow', [0.6, 0.62, 0.03], CONFUSION.tritan, 18, 0.06);
+const BLUE_YELLOW_BACKGROUND: Vec3 = [0.6, 0.62, 0.03];
+export const BLUE_YELLOW_SUBTEST = subtest(
+  'Blue-yellow',
+  BLUE_YELLOW_BACKGROUND,
+  confusionSteps(BLUE_YELLOW_BACKGROUND, CONFUSION.tritan, STEPS, 18, 0.06),
+);

@@ -7,19 +7,19 @@ export interface Diagnosis {
 }
 
 /**
- * Scores are R = red-green, P = purple-blue (protan line) and D = purple-green
+ * Scores are R = red-green, P = purple-blue (protan line) and D = orange-green
  * (deutan line). Every abnormal result gets a severity. The cut-offs have not
  * been calibrated against real protan and deutan observers.
  */
-export function diagnose([redGreen, purpleBlue, purpleGreen]: readonly number[]): Diagnosis {
+export function diagnose([redGreen, purpleBlue, orangeGreen]: readonly number[]): Diagnosis {
   const normal =
-    redGreen > 80 || (redGreen === 80 && purpleBlue > 75 && purpleGreen > 80);
+    redGreen > 80 || (redGreen === 80 && purpleBlue > 75 && orangeGreen > 80);
   if (normal) return { type: 'normal', severity: null };
 
-  const type: DeficiencyType = purpleGreen < purpleBlue ? 'deutan' : 'protan';
+  const type: DeficiencyType = orangeGreen < purpleBlue ? 'deutan' : 'protan';
 
   let severity: Severity;
-  if (redGreen < 25 && (purpleBlue < 40 || purpleGreen < 40)) severity = 'severe';
+  if (redGreen < 25 && (purpleBlue < 40 || orangeGreen < 40)) severity = 'severe';
   else if (redGreen < 60) severity = 'moderate';
   else severity = 'mild';
 

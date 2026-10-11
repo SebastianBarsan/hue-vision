@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { CONFUSION, confusionSteps, lmsToSrgb, srgbToHsl, srgbToLms, type Vec3 } from '../src/colour';
-import { BLUE_YELLOW_SUBTEST, STEPS, SUBTESTS } from '../src/levels';
+import { chromaDifference, CONFUSION, confusionSteps, lmsToSrgb, srgbToHsl, srgbToLms, type Vec3 } from '../src/colour';
+import { BLUE_YELLOW_SUBTEST, STEPS, SUBTESTS, type Subtest } from '../src/levels';
 import { BLUE_YELLOW } from '../src/suites';
 
 const background: Vec3 = [0.6, 0.62, 0.03];
@@ -78,6 +78,22 @@ describe.each([...SUBTESTS, BLUE_YELLOW_SUBTEST].map((t) => [t.name, t] as const
   it('still differs from the background on an 8-bit screen at the last level', () => {
     const to8bit = (hsl: readonly number[]) => hslToSrgb(hsl).map((c) => Math.round(c * 255));
     expect(to8bit(subtest.steps.at(-1)!)).not.toEqual(to8bit(subtest.background));
+  });
+});
+
+describe('protan and deutan subtests', () => {
+  const [redGreen, ...matched] = SUBTESTS;
+  const differences = (subtest: Subtest) =>
+    subtest.steps.map((step) => chromaDifference(hslToSrgb(step), hslToSrgb(subtest.background)));
+
+  it.each(matched.map((t) => [t.name, t] as const))('%s is as hard as red-green from level 7 on', (_, subtest) => {
+    const expected = differences(redGreen);
+    differences(subtest).slice(6).forEach((d, i) => expect(d).toBeCloseTo(expected[i + 6], 2));
+  });
+
+  it.each(matched.map((t) => [t.name, t] as const))('%s is never easier than red-green', (_, subtest) => {
+    const expected = differences(redGreen);
+    differences(subtest).forEach((d, i) => expect(d).toBeLessThanOrEqual(expected[i] * 1.01));
   });
 });
 
