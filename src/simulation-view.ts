@@ -10,7 +10,9 @@ const TYPES: readonly { type: SimulatedType; label: string }[] = [
   { type: 'deutan', label: 'Deutan (green-weak)' },
   { type: 'tritan', label: 'Tritan (blue-weak)' },
 ];
-const SEVERITIES: readonly Severity[] = ['mild', 'moderate', 'severe'];
+/** 'normal' shows the picture unchanged, for comparison. */
+type Level = 'normal' | Severity;
+const LEVELS: readonly Level[] = ['normal', 'mild', 'moderate', 'severe'];
 
 const title = document.querySelector<HTMLElement>('#sim-title')!;
 const intro = document.querySelector<HTMLElement>('#sim-intro')!;
@@ -18,9 +20,9 @@ const original = document.querySelector<HTMLCanvasElement>('#sim-original')!;
 const simulated = document.querySelector<HTMLCanvasElement>('#sim-simulated')!;
 const caption = document.querySelector<HTMLElement>('#sim-caption')!;
 
-// The most common deficiency, shown when the test found none.
+// The most common deficiency, preselected for when the user raises the level.
 let type: SimulatedType = 'deutan';
-let severity: Severity = 'moderate';
+let level: Level = 'moderate';
 let scene: Scene = SCENES[0];
 
 for (const canvas of [original, simulated]) {
@@ -51,12 +53,12 @@ function buttonRow<T>(selector: string, items: readonly T[], label: (item: T) =>
 }
 
 const updateTypes = buttonRow('#sim-types', TYPES, (t) => t.label, (t) => (type = t.type));
-const updateSeverities = buttonRow('#sim-severities', SEVERITIES, capitalise, (s) => (severity = s));
+const updateLevels = buttonRow('#sim-severities', LEVELS, capitalise, (l) => (level = l));
 const updateScenes = buttonRow('#sim-scenes', SCENES, (s) => s.name, (s) => (scene = s));
 
 function render(): void {
   updateTypes((t) => t.type === type);
-  updateSeverities((s) => s === severity);
+  updateLevels((l) => l === level);
   updateScenes((s) => s === scene);
 
   const source = original.getContext('2d')!;
@@ -65,20 +67,22 @@ function render(): void {
   scene.draw(source);
   source.restore();
   const image = source.getImageData(0, 0, original.width, original.height);
-  simulatePixels(image.data, simulationMatrix(type, SEVERITY_AMOUNT[severity]));
+  if (level !== 'normal') simulatePixels(image.data, simulationMatrix(type, SEVERITY_AMOUNT[level]));
   simulated.getContext('2d')!.putImageData(image, 0, 0);
-  caption.textContent = `${capitalise(severity)} ${type}`;
+  caption.textContent = level === 'normal' ? 'Normal colour vision' : `${capitalise(level)} ${type}`;
 }
 
 /** Show the simulation for a test result, starting on the deficiency it found. */
 export function showSimulation(diagnosis: Diagnosis): void {
   if (diagnosis.type === 'normal') {
+    level = 'normal';
     title.textContent = 'How colour vision deficiencies change everyday pictures';
     intro.textContent =
-      'Pick a type and severity to see how everyday pictures look to people with that deficiency.';
+      'Your result was normal, so both pictures match. Pick a type and severity to see how ' +
+      'everyday pictures look to people with that deficiency.';
   } else {
     type = diagnosis.type;
-    severity = diagnosis.severity!;
+    level = diagnosis.severity!;
     title.textContent = 'How you might see it';
     intro.textContent =
       'The right-hand picture simulates your result. If both pictures look about the same to you, ' +
