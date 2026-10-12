@@ -27,9 +27,15 @@ body {
 }
 
 h1 {
-  margin: 0 0 12px;
+  margin: 0;
   font-size: 1.5rem;
   letter-spacing: 0.04em;
+}
+
+.tagline {
+  margin: 4px 0 16px;
+  color: var(--muted);
+  font-size: 0.95rem;
 }
 
 .main-tabs {
