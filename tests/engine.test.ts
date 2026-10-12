@@ -9,7 +9,7 @@ import {
   type State,
 } from '../src/engine';
 import { GRID } from '../src/levels';
-import { BLUE_YELLOW } from '../src/suites';
+import { TRITAN } from '../src/suites';
 
 /** Deterministic pseudo-random generator so tests are repeatable. */
 function seeded(seed = 1): Rng {
@@ -173,23 +173,23 @@ describe('done', () => {
   });
 });
 
-describe('blue-yellow suite', () => {
+describe('tritan suite', () => {
   it('runs a practice round, then its single subtest', () => {
-    let s = hit(createInitialState(rng, BLUE_YELLOW));
+    let s = hit(createInitialState(rng, TRITAN));
     expect(s).toMatchObject({ phase: 'between', subtest: 0, scores: [0] });
     s = next(s);
     expect(s).toMatchObject({ phase: 'testing', subtest: 0 });
-    expect(s.suite).toBe(BLUE_YELLOW);
+    expect(s.suite).toBe(TRITAN);
   });
 
   it('finishes after its subtest, even with a high score', () => {
-    const r = idontSee(hits(restart(rng, BLUE_YELLOW), 17));
+    const r = idontSee(hits(restart(rng, TRITAN), 17));
     expect(r.event).toBe('done');
     expect(r.state.scores).toEqual([85]);
   });
 
   it('restart keeps the suite', () => {
-    expect(restart(rng, BLUE_YELLOW).suite).toBe(BLUE_YELLOW);
+    expect(restart(rng, TRITAN).suite).toBe(TRITAN);
   });
 });
 

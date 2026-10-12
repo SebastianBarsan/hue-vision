@@ -4,7 +4,7 @@ A browser-based test of colour vision and two colour games, each in its own
 tab:
 
 - **Colour Mosaic**: find a block of slightly different colour in a
-  flickering mosaic. It has two sub-tabs, Red-green and Blue-yellow, and gives
+  flickering mosaic. It has two sub-tabs, Red-green and Tritan (Blue-cone), and gives
   a rough screening result.
 - **Colour Recall**: memorise a colour, then recreate it from memory.
 - **Hue Order**: sort a shuffled scale of colours back into order.
@@ -41,7 +41,7 @@ can't use.
 | Red-green | L (red) cone up, M (green) cone down by the same contrast | protans and deutans |
 | Purple-blue | L cone down only | protans |
 | Orange-green | M cone up only | deutans |
-| Blue-yellow | S (blue) cone up only | tritans |
+| Tritan (Blue-cone) | S (blue) cone up only | tritans |
 
 In the Red-green test the cone contrast starts at 50% and shrinks
 geometrically to 1% by the last level. 50% is close to the screen gamut's limit
@@ -57,7 +57,7 @@ easiest levels are capped a little lower because the screen gamut can't show
 a bigger difference on those backgrounds. Any brightness difference left over
 is hidden by the flicker.
 
-### Blue-yellow sub-tab
+### Tritan (Blue-cone) sub-tab
 
 A separate sub-tab tests blue-yellow (tritan) vision with a single 20-level test:
 a blue-violet block on an olive-yellow background. Only the S-cone signal
@@ -68,7 +68,7 @@ pale lavender target. Like the Purple-blue and Orange-green tests, each level
 shows the same visible colour difference as the matching Red-green level.
 Each tab keeps its own progress.
 
-| Blue-yellow result | Score |
+| Tritan result | Score |
 |---|---|
 | Normal | 80 or more |
 | Mild tritan-type | 60–75 |

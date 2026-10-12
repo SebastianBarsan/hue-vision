@@ -59,4 +59,4 @@ export const SUBTESTS: readonly Subtest[] = [
  * stays about as light as the background, so a darker yellow keeps it a
  * saturated blue-violet rather than lavender.
  */
-export const BLUE_YELLOW_SUBTEST = matched('Blue-yellow', [0.52, 0.55, 0], CONFUSION.tritan);
+export const TRITAN_SUBTEST = matched('Tritan (Blue-cone)', [0.52, 0.55, 0], CONFUSION.tritan);

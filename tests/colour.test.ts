@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { chromaDifference, CONFUSION, confusionSteps, lmsToSrgb, srgbToHsl, srgbToLms, type Vec3 } from '../src/colour';
-import { BLUE_YELLOW_SUBTEST, STEPS, SUBTESTS, type Subtest } from '../src/levels';
-import { BLUE_YELLOW } from '../src/suites';
+import { TRITAN_SUBTEST, STEPS, SUBTESTS, type Subtest } from '../src/levels';
+import { TRITAN } from '../src/suites';
 
 const background: Vec3 = [0.6, 0.62, 0.03];
 
@@ -53,7 +53,7 @@ function hslToSrgb([h, s, l]: readonly number[]): Vec3 {
   return [f(0), f(8), f(4)];
 }
 
-describe.each([...SUBTESTS, BLUE_YELLOW_SUBTEST].map((t) => [t.name, t] as const))('%s subtest', (_, subtest) => {
+describe.each([...SUBTESTS, TRITAN_SUBTEST].map((t) => [t.name, t] as const))('%s subtest', (_, subtest) => {
   it(`has ${STEPS} levels`, () => {
     expect(subtest.steps).toHaveLength(STEPS);
   });
@@ -83,7 +83,7 @@ describe.each([...SUBTESTS, BLUE_YELLOW_SUBTEST].map((t) => [t.name, t] as const
 
 describe('single-cone subtests', () => {
   const [redGreen, ...rest] = SUBTESTS;
-  const matched = [...rest, BLUE_YELLOW_SUBTEST];
+  const matched = [...rest, TRITAN_SUBTEST];
   const differences = (subtest: Subtest) =>
     subtest.steps.map((step) => chromaDifference(hslToSrgb(step), hslToSrgb(subtest.background)));
 
@@ -98,8 +98,8 @@ describe('single-cone subtests', () => {
   });
 });
 
-describe('blue-yellow suite', () => {
+describe('tritan suite', () => {
   it('has one subtest', () => {
-    expect(BLUE_YELLOW.subtests).toEqual([BLUE_YELLOW_SUBTEST]);
+    expect(TRITAN.subtests).toEqual([TRITAN_SUBTEST]);
   });
 });

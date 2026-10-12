@@ -1,5 +1,5 @@
 import { describeDiagnosis, diagnose, diagnoseTritan, type Diagnosis } from './diagnosis';
-import { BLUE_YELLOW_SUBTEST, SUBTESTS, type Subtest } from './levels';
+import { TRITAN_SUBTEST, SUBTESTS, type Subtest } from './levels';
 
 /** One tab: a practice round, then its subtests in order. */
 export interface Suite {
@@ -29,17 +29,17 @@ export const RED_GREEN: Suite = {
   skippedNote: "Your red-green score was above 80%, so the other tests weren't needed.",
 };
 
-export const BLUE_YELLOW: Suite = {
-  id: 'blue-yellow',
-  name: 'Blue-yellow',
-  subtests: [BLUE_YELLOW_SUBTEST],
+export const TRITAN: Suite = {
+  id: 'tritan',
+  name: 'Tritan (Blue-cone)',
+  subtests: [TRITAN_SUBTEST],
   stopsEarly: () => false,
   diagnose: ([score]) => diagnoseTritan(score),
   describe: ([score]) => {
     const diagnosis = diagnoseTritan(score);
     // This tab alone can't rule out red-green deficiencies.
-    return diagnosis.type === 'normal' ? 'Normal blue-yellow vision' : describeDiagnosis(diagnosis);
+    return diagnosis.type === 'normal' ? 'Normal tritan (blue-cone) vision' : describeDiagnosis(diagnosis);
   },
 };
 
-export const SUITES: readonly Suite[] = [RED_GREEN, BLUE_YELLOW];
+export const SUITES: readonly Suite[] = [RED_GREEN, TRITAN];

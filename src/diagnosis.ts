@@ -27,7 +27,7 @@ export function diagnose([redGreen, purpleBlue, orangeGreen]: readonly number[])
 }
 
 /**
- * Blue-yellow result from the single tritan score. The cut-offs mirror the
+ * Tritan result from the single tritan score. The cut-offs mirror the
  * red-green ones and have not been calibrated against real tritan observers.
  */
 export function diagnoseTritan(score: number): Diagnosis {
