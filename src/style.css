@@ -28,8 +28,33 @@ body {
 
 h1 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 2.25rem;
   letter-spacing: 0.04em;
+}
+
+/* Rainbow lettering whose colours sweep back and forth across the title. */
+.rainbow {
+  background: linear-gradient(90deg, #ff4d4d, #ffa64d, #ffe14d, #5ee05e, #4dc3ff, #7a6bff, #d65eff, #ff4d4d);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: rainbow-sweep 4.5s ease-in-out infinite alternate;
+}
+
+@keyframes rainbow-sweep {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 100% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rainbow {
+    animation: none;
+  }
 }
 
 .tagline {
