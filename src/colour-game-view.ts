@@ -130,8 +130,15 @@ function showResult(): void {
   againButton.focus();
 }
 
+const view = document.querySelector<HTMLElement>('#game-view')!;
+/** Time of the previous animation frame, so hidden time can be added back. */
+let lastFrame = performance.now();
+
 /** Counts down the timed phases and moves on when time runs out. */
 function tick(now: number): void {
+  // The clock stops while the tab is hidden.
+  if (view.hidden) deadline += now - lastFrame;
+  lastFrame = now;
   if (phase === 'memorise' || phase === 'adjust') {
     const total = phase === 'memorise' ? MEMORISE_MS : ADJUST_MS;
     const left = Math.max(0, deadline - now);

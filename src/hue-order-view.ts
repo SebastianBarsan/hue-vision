@@ -208,7 +208,14 @@ function finish(): void {
   againButton.focus();
 }
 
+const view = document.querySelector<HTMLElement>('#hue-view')!;
+/** Time of the previous animation frame, so hidden time can be added back. */
+let lastFrame = performance.now();
+
 function tick(now: number): void {
+  // The clock stops while the tab is hidden.
+  if (view.hidden) deadline += now - lastFrame;
+  lastFrame = now;
   if (phase === 'playing') {
     const left = Math.max(0, deadline - now);
     timerBar.style.width = `${(left / TIME_MS) * 100}%`;
