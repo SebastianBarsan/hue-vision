@@ -212,6 +212,7 @@ function switchSuite(suite: Suite): void {
 }
 
 canvas.addEventListener('pointerdown', (e) => {
+  if (e.button !== 0) return;
   const tile = renderer.pointToTile(e.clientX, e.clientY);
   if (tile) apply(click(state, tile.row, tile.col));
 });

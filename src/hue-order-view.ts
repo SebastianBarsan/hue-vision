@@ -104,6 +104,7 @@ function tap(id: number): void {
 }
 
 row.addEventListener('pointerdown', (e) => {
+  if (e.button !== 0) return;
   const block = (e.target as HTMLElement).closest<HTMLElement>('.hue-block');
   if (phase !== 'playing' || !block) return;
   drag = { id: Number(block.dataset.id), startX: e.clientX, moved: false };
