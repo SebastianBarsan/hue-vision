@@ -1,4 +1,4 @@
-# colourblind_test
+# Hue Vision
 
 A browser-based test of colour vision and two colour games, each in its own
 tab:
