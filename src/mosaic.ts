@@ -196,6 +196,8 @@ function renderAll(): void {
   updateTabs();
   buildScores();
   updateResults();
+  // The board has no size while hidden, so a resize then would have shrunk it to nothing.
+  renderer.resize();
   const active = state.phase === 'demo' || state.phase === 'testing';
   setMessage(active ? 'Click on the small square!' : '');
   showBoard();
