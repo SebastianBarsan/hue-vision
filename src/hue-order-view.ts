@@ -66,7 +66,10 @@ function render(): void {
     button.disabled = phase !== 'playing';
     button.classList.toggle('selected', id === selected);
   });
+  // Moving a focused element blurs it, so put focus back for keyboard players.
+  const focused = document.activeElement;
   row.replaceChildren(...order.map((id) => blocks[id]));
+  if (focused instanceof HTMLElement && row.contains(focused)) focused.focus();
 }
 
 /** Show `text` under the blocks, or the usual instructions when it's null. */
