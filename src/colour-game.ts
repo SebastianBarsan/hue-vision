@@ -7,6 +7,8 @@ import { srgbToOklab, type Vec3 } from './colour';
 
 export const MEMORISE_MS = 5_000;
 export const ADJUST_MS = 20_000;
+/** How long the one hint per colour shows the target. */
+export const HINT_MS = 300;
 export const MAX_POINTS = 1000;
 
 /** Hue in degrees (0–360), saturation and brightness from 0 to 100. */

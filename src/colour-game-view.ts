@@ -1,6 +1,7 @@
 import {
   ADJUST_MS,
   css,
+  HINT_MS,
   MEMORISE_MS,
   randomColour,
   score,
@@ -24,6 +25,7 @@ const sliders = {
 };
 const startButton = document.querySelector<HTMLButtonElement>('#game-start')!;
 const lockButton = document.querySelector<HTMLButtonElement>('#game-lock')!;
+const hintButton = document.querySelector<HTMLButtonElement>('#game-hint')!;
 const result = document.querySelector<HTMLElement>('#game-result')!;
 const verdictEl = document.querySelector<HTMLElement>('#game-verdict')!;
 const pointsEl = document.querySelector<HTMLElement>('#game-points')!;
@@ -36,9 +38,33 @@ let phase: Phase = 'ready';
 let target: Hsb = START;
 /** When the current timed phase ends, in performance.now() time. */
 let deadline = 0;
+/** Ends the hint flash; set only while the hint is showing. */
+let hintTimeout: number | undefined;
 
 function guess(): Hsb {
   return { h: sliders.h.valueAsNumber, s: sliders.s.valueAsNumber, b: sliders.b.valueAsNumber };
+}
+
+/** The swatch shows the guess, split with the target on the left while the hint is showing. */
+function paintSwatch(): void {
+  const g = css(guess());
+  swatch.style.background =
+    hintTimeout === undefined ? g : `linear-gradient(to right, ${css(target)} 50%, ${g} 50%)`;
+}
+
+function endHint(): void {
+  clearTimeout(hintTimeout);
+  hintTimeout = undefined;
+}
+
+function showHint(): void {
+  if (phase !== 'adjust' || hintButton.disabled) return;
+  hintButton.disabled = true;
+  hintTimeout = setTimeout(() => {
+    endHint();
+    if (phase === 'adjust') paintSwatch();
+  }, HINT_MS);
+  paintSwatch();
 }
 
 /** Each slider's track shows the colours it can reach from the current guess. */
@@ -49,7 +75,7 @@ function paintSliders(): void {
   sliders.h.style.setProperty('--track', gradient(range(13, (t) => ({ ...g, h: t * 360 }))));
   sliders.s.style.setProperty('--track', gradient(range(5, (t) => ({ ...g, s: t * 100 }))));
   sliders.b.style.setProperty('--track', gradient(range(5, (t) => ({ ...g, b: t * 100 }))));
-  if (phase === 'adjust') swatch.style.background = css(g);
+  if (phase === 'adjust') paintSwatch();
 }
 
 function setSliders(colour: Hsb, enabled: boolean): void {
@@ -80,10 +106,13 @@ const describe = ({ h, s, b }: Hsb) => `H ${Math.round(h)}° · S ${s} · B ${b}
 
 function setPhase(next: Phase): void {
   phase = next;
+  endHint();
   play.hidden = phase === 'result';
   result.hidden = phase !== 'result';
   startButton.hidden = phase !== 'ready';
   lockButton.hidden = phase !== 'adjust';
+  hintButton.hidden = phase !== 'adjust';
+  hintButton.disabled = false;
 
   switch (phase) {
     case 'ready':
@@ -157,6 +186,7 @@ for (const slider of Object.values(sliders)) slider.addEventListener('input', pa
 
 startButton.addEventListener('click', () => setPhase('memorise'));
 lockButton.addEventListener('click', () => setPhase('result'));
+hintButton.addEventListener('click', showHint);
 againButton.addEventListener('click', () => setPhase('memorise'));
 
 setPhase('ready');
