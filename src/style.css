@@ -280,6 +280,15 @@ button.primary:hover:not(:disabled) {
   background: #fff3a0;
 }
 
+#game-lock {
+  font-weight: 700;
+}
+
+#game-hint:hover:not(:disabled) {
+  background: #ffc285;
+  color: var(--bg);
+}
+
 button:disabled {
   opacity: 0.4;
   cursor: default;
