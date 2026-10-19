@@ -25,7 +25,8 @@ describe('diagnose', () => {
 describe('diagnoseTritan', () => {
   it.each([
     [100, 'normal', null],
-    [80, 'normal', null],
+    [85, 'normal', null],
+    [80, 'tritan', 'mild'],
     [75, 'tritan', 'mild'],
     [60, 'tritan', 'mild'],
     [55, 'tritan', 'moderate'],

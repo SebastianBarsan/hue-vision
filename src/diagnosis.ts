@@ -31,7 +31,7 @@ export function diagnose([redGreen, purpleBlue, orangeGreen]: readonly number[])
  * red-green ones and have not been calibrated against real tritan observers.
  */
 export function diagnoseTritan(score: number): Diagnosis {
-  if (score >= 80) return { type: 'normal', severity: null };
+  if (score > 80) return { type: 'normal', severity: null };
   if (score < 25) return { type: 'tritan', severity: 'severe' };
   if (score < 60) return { type: 'tritan', severity: 'moderate' };
   return { type: 'tritan', severity: 'mild' };

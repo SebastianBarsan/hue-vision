@@ -124,8 +124,11 @@ function showBoard(): void {
   }
 }
 
-/** Swap the board for the final results screen once the whole test is done. */
-function updateResults(): void {
+/**
+ * Swap the board for the final results screen once the whole test is done.
+ * `justFinished` moves focus to Test again, which only makes sense right at the end.
+ */
+function updateResults(justFinished = false): void {
   const done = state.phase === 'done';
   testView.forEach((el) => (el.hidden = done));
   results.hidden = !done;
@@ -156,7 +159,7 @@ function updateResults(): void {
   );
   skippedNote.hidden = state.subtest === suite.subtests.length - 1;
   skippedNote.textContent = suite.skippedNote ?? '';
-  againButton.focus();
+  if (justFinished) againButton.focus();
 }
 
 function setState(next: State): void {
@@ -188,7 +191,7 @@ function apply({ state: next, event }: Result): void {
   if (event !== 'miss') showBoard();
   updateText();
   updatePause();
-  updateResults();
+  updateResults(event === 'done');
 }
 
 /** Redraw everything for the current state, e.g. after switching tabs. */
