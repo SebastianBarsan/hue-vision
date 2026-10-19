@@ -185,7 +185,8 @@ function start(): void {
   render();
 }
 
-function finish(): void {
+/** End the round. Giving up scores nothing, whatever the order. */
+function finish(gaveUp = false): void {
   if (phase !== 'playing') return;
   const msLeft = Math.max(0, deadline - performance.now());
   phase = 'result';
@@ -194,16 +195,18 @@ function finish(): void {
   drag = null;
   selected = null;
 
-  const points = score(order, msLeft);
+  const points = gaveUp ? 0 : score(order, msLeft);
   const best = readBest();
   if (points > best) saveBest(points);
 
   play.hidden = true;
   result.hidden = false;
   pointsEl.textContent = String(points);
-  verdictEl.textContent = isSorted(order)
-    ? `Sorted with ${(msLeft / 1000).toFixed(1)} seconds to spare!`
-    : `${correctNeighbours(order)} of ${BLOCKS - 1} neighbours in the right place`;
+  verdictEl.textContent = gaveUp
+    ? 'You gave up'
+    : isSorted(order)
+      ? `Sorted with ${(msLeft / 1000).toFixed(1)} seconds to spare!`
+      : `${correctNeighbours(order)} of ${BLOCKS - 1} neighbours in the right place`;
   strip(yoursRow, order);
   // Show the sorted scale the same way round as the player's attempt.
   const ascending = Array.from({ length: BLOCKS }, (_, i) => i);
@@ -232,7 +235,7 @@ function tick(now: number): void {
 
 startButton.addEventListener('click', start);
 submitButton.addEventListener('click', submit);
-finishButton.addEventListener('click', finish);
+finishButton.addEventListener('click', () => finish(true));
 againButton.addEventListener('click', start);
 
 // Before the first round: a row of blank blocks.
