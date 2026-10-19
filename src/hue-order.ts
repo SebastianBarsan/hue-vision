@@ -133,14 +133,18 @@ export function swap(order: readonly number[], a: number, b: number): number[] {
 
 /** Share of the points for getting the order right; the rest rewards speed. */
 const ACCURACY_POINTS = 700;
+/** Sorting within this long still earns the full time bonus. */
+export const PERFECT_MS = 5_000;
 
 /**
  * Points out of MAX_POINTS. A sorted scale scores 700 plus up to 300 for the
- * time left. An unsorted one scores 700 times its share of correct neighbours.
+ * time left, the full 300 when sorted within PERFECT_MS. An unsorted one
+ * scores 700 times its share of correct neighbours.
  */
 export function score(order: readonly number[], msLeft: number): number {
   if (isSorted(order)) {
-    return Math.round(ACCURACY_POINTS + (MAX_POINTS - ACCURACY_POINTS) * Math.max(0, msLeft / TIME_MS));
+    const bonus = Math.min(1, Math.max(0, msLeft / (TIME_MS - PERFECT_MS)));
+    return Math.round(ACCURACY_POINTS + (MAX_POINTS - ACCURACY_POINTS) * bonus);
   }
   return Math.round((ACCURACY_POINTS * correctNeighbours(order)) / (order.length - 1));
 }

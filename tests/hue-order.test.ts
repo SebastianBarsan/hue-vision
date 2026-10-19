@@ -8,6 +8,7 @@ import {
   makeScale,
   MAX_POINTS,
   move,
+  PERFECT_MS,
   score,
   SCALES,
   shuffled,
@@ -104,7 +105,9 @@ describe('ordering', () => {
 describe('score', () => {
   it('gives 700 plus a time bonus for a sorted scale', () => {
     expect(score(sorted, TIME_MS)).toBe(MAX_POINTS);
-    expect(score(sorted, TIME_MS / 2)).toBe(850);
+    expect(score(sorted, TIME_MS - PERFECT_MS)).toBe(MAX_POINTS);
+    expect(score(sorted, TIME_MS - PERFECT_MS - 1000)).toBe(988);
+    expect(score(sorted, (TIME_MS - PERFECT_MS) / 2)).toBe(850);
     expect(score([...sorted].reverse(), 0)).toBe(700);
   });
 
