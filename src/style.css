@@ -4,6 +4,8 @@
   --fg: #e8e8ea;
   --muted: #9a9ca3;
   --accent: #f0e68c;
+  --accent-hover: #fff3a0;
+  --hint-hover: #ffc285;
   --button: #2a2c31;
   --button-hover: #383b42;
 }
@@ -277,7 +279,7 @@ button.primary {
 }
 
 button.primary:hover:not(:disabled) {
-  background: #fff3a0;
+  background: var(--accent-hover);
 }
 
 #game-lock {
@@ -285,7 +287,7 @@ button.primary:hover:not(:disabled) {
 }
 
 #game-hint:hover:not(:disabled) {
-  background: #ffc285;
+  background: var(--hint-hover);
   color: var(--bg);
 }
 
