@@ -26,7 +26,7 @@ const startButton = document.querySelector<HTMLButtonElement>('#hue-start')!;
 const help = document.querySelector<HTMLElement>('#hue-help')!;
 const HELP = help.textContent!;
 const submitButton = document.querySelector<HTMLButtonElement>('#hue-submit')!;
-const finishButton = document.querySelector<HTMLButtonElement>('#hue-give-up')!;
+const giveUpButton = document.querySelector<HTMLButtonElement>('#hue-give-up')!;
 const result = document.querySelector<HTMLElement>('#hue-result')!;
 const verdictEl = document.querySelector<HTMLElement>('#hue-verdict')!;
 const pointsEl = document.querySelector<HTMLElement>('#hue-points')!;
@@ -179,7 +179,7 @@ function start(): void {
   result.hidden = true;
   startButton.hidden = true;
   submitButton.hidden = false;
-  finishButton.hidden = false;
+  giveUpButton.hidden = false;
   showHelp(null);
   stage.textContent = `Sort the colours into a smooth scale: ${scale.name}`;
   render();
@@ -235,7 +235,7 @@ function tick(now: number): void {
 
 startButton.addEventListener('click', start);
 submitButton.addEventListener('click', submit);
-finishButton.addEventListener('click', () => finish(true));
+giveUpButton.addEventListener('click', () => finish(true));
 againButton.addEventListener('click', start);
 
 // Before the first round: a row of blank blocks.

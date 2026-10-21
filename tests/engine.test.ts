@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   click,
   createInitialState,
-  idontSee,
+  iDontSee,
   nextTest,
   restart,
   type Rng,
@@ -38,7 +38,7 @@ function next(state: State): State {
 }
 
 function skip(state: State): State {
-  return idontSee(state).state;
+  return iDontSee(state).state;
 }
 
 function hits(state: State, n: number): State {
@@ -63,7 +63,7 @@ describe('demo', () => {
 
 describe('between subtests', () => {
   it('waits for Next test before starting the next subtest', () => {
-    const r = idontSee(hits(restart(rng), 4));
+    const r = iDontSee(hits(restart(rng), 4));
     expect(r.event).toBe('between');
     expect(r.state).toMatchObject({ phase: 'between', subtest: 1, scores: [20, 0, 0] });
 
@@ -76,7 +76,7 @@ describe('between subtests', () => {
   it("ignores clicks and I don't see while waiting", () => {
     const s = skip(restart(rng));
     expect(click(s, 5, 5)).toEqual({ state: s, event: 'ignored' });
-    expect(idontSee(s).event).toBe('ignored');
+    expect(iDontSee(s).event).toBe('ignored');
   });
 
   it('ignores Next test outside the pause', () => {
@@ -153,7 +153,7 @@ describe('I don\'t see', () => {
     expect(s.subtest).toBe(1);
     s = next(skip(s));
     expect(s.subtest).toBe(2);
-    const r = idontSee(s);
+    const r = iDontSee(s);
     expect(r.event).toBe('done');
     expect(r.state.scores).toEqual([10, 0, 0]);
   });
@@ -163,7 +163,7 @@ describe('done', () => {
   it('ignores clicks and I don\'t see', () => {
     const s = hits(restart(rng), 20);
     expect(click(s, 5, 5)).toEqual({ state: s, event: 'ignored' });
-    expect(idontSee(s).event).toBe('ignored');
+    expect(iDontSee(s).event).toBe('ignored');
     expect(nextTest(s, rng).event).toBe('ignored');
   });
 
@@ -183,7 +183,7 @@ describe('tritan suite', () => {
   });
 
   it('finishes after its subtest, even with a high score', () => {
-    const r = idontSee(hits(restart(rng, TRITAN), 17));
+    const r = iDontSee(hits(restart(rng, TRITAN), 17));
     expect(r.event).toBe('done');
     expect(r.state.scores).toEqual([85]);
   });

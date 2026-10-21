@@ -3,7 +3,7 @@ import {
   createInitialState,
   currentSubtest,
   currentTarget,
-  idontSee,
+  iDontSee,
   nextTest,
   restart,
   type Result,
@@ -20,7 +20,7 @@ const tabs = document.querySelector<HTMLElement>('#tabs')!;
 const scoresEl = document.querySelector<HTMLElement>('#scores')!;
 const stage = document.querySelector<HTMLElement>('#stage')!;
 const message = document.querySelector<HTMLElement>('#message')!;
-const idontSeeButton = document.querySelector<HTMLButtonElement>('#idontsee')!;
+const iDontSeeButton = document.querySelector<HTMLButtonElement>('#idontsee')!;
 const restartButton = document.querySelector<HTMLButtonElement>('#restart')!;
 const pause = document.querySelector<HTMLElement>('#pause')!;
 const pauseText = document.querySelector<HTMLElement>('#pause-text')!;
@@ -97,7 +97,7 @@ function updateText(): void {
         : state.phase === 'between'
           ? `Up next: ${testName}`
           : testName;
-  idontSeeButton.disabled = state.phase === 'between' || state.phase === 'done';
+  iDontSeeButton.disabled = state.phase === 'between' || state.phase === 'done';
 }
 
 /** Cover the board with a Next test button until the user starts the next subtest. */
@@ -220,7 +220,7 @@ canvas.addEventListener('pointerdown', (e) => {
   if (tile) apply(click(state, tile.row, tile.col));
 });
 
-idontSeeButton.addEventListener('click', () => apply(idontSee(state)));
+iDontSeeButton.addEventListener('click', () => apply(iDontSee(state)));
 
 nextButton.addEventListener('click', () => apply(nextTest(state, rng)));
 

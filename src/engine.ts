@@ -123,7 +123,7 @@ export function click(state: State, row: number, col: number): Result {
   return advance(state);
 }
 
-export function idontSee(state: State): Result {
+export function iDontSee(state: State): Result {
   if (state.phase === 'between' || state.phase === 'done') return { state, event: 'ignored' };
   return advance(state);
 }
