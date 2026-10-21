@@ -1,4 +1,4 @@
-import { describeDiagnosis, diagnose, diagnoseTritan, type Diagnosis } from './diagnosis';
+import { describeDiagnosis, diagnose, diagnoseTritan, NORMAL_SCORE, type Diagnosis } from './diagnosis';
 import { TRITAN_SUBTEST, SUBTESTS, type Subtest } from './levels';
 
 /** One tab: a practice round, then its subtests in order. */
@@ -16,17 +16,15 @@ export interface Suite {
   skippedNote?: string;
 }
 
-/** Above this red-green score vision counts as normal and the test stops early. */
-export const NORMAL_RED_GREEN = 80;
-
 export const RED_GREEN: Suite = {
   id: 'red-green',
   name: 'Red-green',
   subtests: SUBTESTS,
-  stopsEarly: (scores) => scores[0] > NORMAL_RED_GREEN,
+  // A normal red-green score stops the test early.
+  stopsEarly: (scores) => scores[0] > NORMAL_SCORE,
   diagnose,
   describe: (scores) => describeDiagnosis(diagnose(scores)),
-  skippedNote: "Your red-green score was above 80%, so the other tests weren't needed.",
+  skippedNote: `Your red-green score was above ${NORMAL_SCORE}%, so the other tests weren't needed.`,
 };
 
 export const TRITAN: Suite = {

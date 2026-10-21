@@ -1,6 +1,9 @@
 export type DeficiencyType = 'normal' | 'protan' | 'deutan' | 'tritan';
 export type Severity = 'mild' | 'moderate' | 'severe';
 
+/** Scores above this percent count as normal, for red-green and tritan alike. */
+export const NORMAL_SCORE = 80;
+
 export interface Diagnosis {
   type: DeficiencyType;
   severity: Severity | null;
@@ -13,7 +16,8 @@ export interface Diagnosis {
  */
 export function diagnose([redGreen, purpleBlue, orangeGreen]: readonly number[]): Diagnosis {
   const normal =
-    redGreen > 80 || (redGreen === 80 && purpleBlue > 75 && orangeGreen > 80);
+    redGreen > NORMAL_SCORE ||
+    (redGreen === NORMAL_SCORE && purpleBlue > 75 && orangeGreen > NORMAL_SCORE);
   if (normal) return { type: 'normal', severity: null };
 
   const type: DeficiencyType = orangeGreen < purpleBlue ? 'deutan' : 'protan';
@@ -31,7 +35,7 @@ export function diagnose([redGreen, purpleBlue, orangeGreen]: readonly number[])
  * red-green ones and have not been calibrated against real tritan observers.
  */
 export function diagnoseTritan(score: number): Diagnosis {
-  if (score > 80) return { type: 'normal', severity: null };
+  if (score > NORMAL_SCORE) return { type: 'normal', severity: null };
   if (score < 25) return { type: 'tritan', severity: 'severe' };
   if (score < 60) return { type: 'tritan', severity: 'moderate' };
   return { type: 'tritan', severity: 'mild' };
