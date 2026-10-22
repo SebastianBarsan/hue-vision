@@ -1,7 +1,7 @@
 import { toGamma, toLinear, type Vec3 } from './colour';
 import type { DeficiencyType, Severity } from './diagnosis';
 
-export type SimulatedType = Exclude<DeficiencyType, 'normal'>;
+export type SimulatedType = Exclude<DeficiencyType, 'normal' | 'red-green'>;
 export type Mat3 = readonly [Vec3, Vec3, Vec3];
 
 /**

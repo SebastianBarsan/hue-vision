@@ -81,11 +81,16 @@ export function showSimulation(diagnosis: Diagnosis): void {
       'Your result was normal, so both pictures match. Pick a type and severity to see how ' +
       'everyday pictures look to people with that deficiency.';
   } else {
-    type = diagnosis.type;
+    const unsure = diagnosis.type === 'red-green';
+    type = diagnosis.type === 'red-green' ? 'deutan' : diagnosis.type;
     level = diagnosis.severity!;
     title.textContent = 'How you might see it';
     intro.textContent =
-      'The right-hand picture simulates your result. If both pictures look about the same to you, ' +
+      (unsure
+        ? "The test couldn't tell whether your result is protan or deutan, so the right-hand " +
+          'picture starts on deutan, the more common type. Try protan too. '
+        : 'The right-hand picture simulates your result. ') +
+      'If both pictures look about the same to you, ' +
       "that's expected: the simulation only removes colour differences your eyes already struggle " +
       'with. Show it to someone with normal colour vision to let them see through your eyes.';
   }

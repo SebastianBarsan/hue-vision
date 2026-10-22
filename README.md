@@ -90,7 +90,8 @@ With R = red-green, P = purple-blue and D = orange-green:
 |---|---|
 | Normal colour vision | R > 80, or R = 80 with P > 75 and D > 80 |
 | Deutan-type deficiency | otherwise, if D < P |
-| Protan-type deficiency | otherwise |
+| Protan-type deficiency | otherwise, if P < D |
+| Red-green deficiency | otherwise (P = D, so the type can't be told) |
 
 | Severity | Rule |
 |---|---|

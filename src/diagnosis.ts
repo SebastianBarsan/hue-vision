@@ -1,4 +1,5 @@
-export type DeficiencyType = 'normal' | 'protan' | 'deutan' | 'tritan';
+/** 'red-green' is a protan or deutan result that the scores can't tell apart. */
+export type DeficiencyType = 'normal' | 'protan' | 'deutan' | 'red-green' | 'tritan';
 export type Severity = 'mild' | 'moderate' | 'severe';
 
 /** Scores above this percent count as normal, for red-green and tritan alike. */
@@ -20,7 +21,10 @@ export function diagnose([redGreen, purpleBlue, orangeGreen]: readonly number[])
     (redGreen === NORMAL_SCORE && purpleBlue > 75 && orangeGreen > NORMAL_SCORE);
   if (normal) return { type: 'normal', severity: null };
 
-  const type: DeficiencyType = orangeGreen < purpleBlue ? 'deutan' : 'protan';
+  let type: DeficiencyType;
+  if (orangeGreen < purpleBlue) type = 'deutan';
+  else if (purpleBlue < orangeGreen) type = 'protan';
+  else type = 'red-green';
 
   let severity: Severity;
   if (redGreen < 25 && (purpleBlue < 40 || orangeGreen < 40)) severity = 'severe';
@@ -44,5 +48,6 @@ export function diagnoseTritan(score: number): Diagnosis {
 export function describeDiagnosis({ type, severity }: Diagnosis): string {
   if (type === 'normal') return 'Normal colour vision';
   const label = severity![0].toUpperCase() + severity!.slice(1);
-  return `${label} ${type}-type colour vision deficiency`;
+  const kind = type === 'red-green' ? type : `${type}-type`;
+  return `${label} ${kind} colour vision deficiency`;
 }
