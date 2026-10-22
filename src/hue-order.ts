@@ -137,9 +137,10 @@ const ACCURACY_POINTS = 700;
 export const PERFECT_MS = 5_000;
 
 /**
- * Points out of MAX_POINTS. A sorted scale scores 700 plus up to 300 for the
- * time left, the full 300 when sorted within PERFECT_MS. An unsorted one
- * scores 700 times its share of correct neighbours.
+ * Points out of MAX_POINTS. A sorted scale scores ACCURACY_POINTS plus a time
+ * bonus of up to the remaining points, all of it when sorted within
+ * PERFECT_MS. An unsorted one scores ACCURACY_POINTS times its share of
+ * correct neighbours.
  */
 export function score(order: readonly number[], msLeft: number): number {
   if (isSorted(order)) {
