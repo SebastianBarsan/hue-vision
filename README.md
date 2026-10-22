@@ -9,6 +9,13 @@ tab:
 - **Colour Recall**: memorise a colour, then recreate it from memory.
 - **Hue Order**: sort a shuffled scale of colours back into order.
 
+## Try it out
+
+The site is live at **https://hue-vision.onrender.com/**, feel free to try it
+out in your browser, no installation is needed. For the best results, turn off
+night mode or any blue-light filter first, since they change the colours on
+your screen.
+
 > This is a screening tool, not a medical diagnosis. Results depend on your
 > screen's colour calibration and brightness.
 
