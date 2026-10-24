@@ -78,6 +78,19 @@ function updateTabs(): void {
   });
 }
 
+function stageText(testName: string): string {
+  switch (state.phase) {
+    case 'demo':
+      return 'Practice round';
+    case 'done':
+      return 'Test complete';
+    case 'between':
+      return `Up next: ${testName}`;
+    default:
+      return testName;
+  }
+}
+
 function updateText(): void {
   const { subtests } = state.suite;
   scoreEls.forEach((el, i) => {
@@ -89,14 +102,7 @@ function updateText(): void {
     subtests.length === 1
       ? subtestName
       : `Test ${state.subtest + 1} of ${subtests.length} – ${subtestName}`;
-  stage.textContent =
-    state.phase === 'demo'
-      ? 'Practice round'
-      : state.phase === 'done'
-        ? 'Test complete'
-        : state.phase === 'between'
-          ? `Up next: ${testName}`
-          : testName;
+  stage.textContent = stageText(testName);
   iDontSeeButton.disabled = state.phase === 'between' || state.phase === 'done';
 }
 

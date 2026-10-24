@@ -185,6 +185,12 @@ function start(): void {
   render();
 }
 
+function verdictText(gaveUp: boolean, msLeft: number): string {
+  if (gaveUp) return 'You gave up';
+  if (isSorted(order)) return `Sorted with ${(msLeft / 1000).toFixed(1)} seconds to spare!`;
+  return `${correctNeighbours(order)} of ${BLOCKS - 1} neighbours in the right place`;
+}
+
 /** End the round. Giving up scores nothing, whatever the order. */
 function finish(gaveUp = false): void {
   if (phase !== 'playing') return;
@@ -202,11 +208,7 @@ function finish(gaveUp = false): void {
   play.hidden = true;
   result.hidden = false;
   pointsEl.textContent = String(points);
-  verdictEl.textContent = gaveUp
-    ? 'You gave up'
-    : isSorted(order)
-      ? `Sorted with ${(msLeft / 1000).toFixed(1)} seconds to spare!`
-      : `${correctNeighbours(order)} of ${BLOCKS - 1} neighbours in the right place`;
+  verdictEl.textContent = verdictText(gaveUp, msLeft);
   strip(yoursRow, order);
   // Show the sorted scale the same way round as the player's attempt.
   const ascending = Array.from({ length: BLOCKS }, (_, i) => i);
