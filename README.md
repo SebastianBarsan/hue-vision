@@ -141,8 +141,9 @@ A game in the spirit of hue-ordering tests such as the Farnsworth D-15. A
 scale of **15 blocks** that blends from one colour to another is shuffled,
 and you have **30 seconds** to put it back in order. Drag a block to move it, or tap two
 blocks to swap them (keyboard: Tab to a block, Enter on two blocks to swap).
-The round ends as soon as the scale is sorted, when time runs out, or on
-**Finish now**.
+Press **Submit** when you think the scale is sorted. If it isn't, you're told
+to keep trying and the timer keeps running. The round ends on a correct
+Submit, when time runs out, or on **Give up**.
 
 - Each round picks one of six scales, never the same one twice in a row:
   Red → Yellow, Yellow → Green, Cyan → Blue, Blue → Purple, Purple → Pink and
@@ -156,9 +157,11 @@ The round ends as soon as the scale is sorted, when time runs out, or on
 - Either direction counts as sorted.
 - A fresh shuffle has at most 2 blocks already next to their correct
   neighbour.
-- **Points out of 1000**: a sorted scale scores 700 plus up to 300 for the time
-  left. An unsorted one scores 700 times the share of its 14 neighbouring
-  pairs that are correct.
+- **Points out of 1000**: a sorted scale scores 700 plus up to 300 for speed.
+  Sorting it within the first 5 seconds earns the full 1000, and the bonus
+  falls evenly to 0 at 30 seconds. When time runs out, an unsorted scale
+  scores 700 times the share of its 14 neighbouring pairs that are correct.
+  Giving up always scores 0.
 - Your best score is kept in the browser.
 
 ## Running it
